@@ -13,6 +13,9 @@
  *   - /arckit:health       ✅ handled here (replaces health-scan.mjs)
  *   - /arckit:analyze      ✅ handled here (replaces governance-scan.mjs)
  *
+ * Graph-aware new commands (#359):
+ *   - /arckit:navigator    "what's next" project GPS — coverage + gaps + recommended commands
+ *
  * Hook Type: UserPromptSubmit (sync)
  * Input  (stdin):  JSON with prompt, cwd, etc.
  * Output (stdout): JSON with hookSpecificOutput.additionalContext
@@ -52,6 +55,20 @@ const RECIPES = [
     // into the prompt context, so v1 fields only.
     opts: {},
     format: formatImpact,
+  },
+  {
+    command: 'navigator',
+    rawRe: /^\s*\/arckit[.:]+navigator\b/i,
+    expandedRe: /description:\s*Project-level GPS|#\s*Navigator/i,
+    opts: prompt => {
+      const arg = parseProjectArg(prompt, 'navigator');
+      return {
+        excludeGlobal: false,    // need to know if global PRIN exists
+        withNodeMetadata: true,  // status, version, owner, reqIds
+        ...(arg ? { projectFilter: arg } : {}),
+      };
+    },
+    format: formatNavigator,
   },
   {
     command: 'analyze',
@@ -269,6 +286,184 @@ function formatImpact(graph, prompt) {
   lines.push('- Classify impact severity using node severity field');
   lines.push('- Output impact chain table, summary counts, and recommended actions');
   lines.push('- Suggest specific /arckit commands to re-run for HIGH severity impacts');
+
+  return lines.join('\n');
+}
+
+// Essential doc types per tier — used by navigator to compute coverage and
+// recommend the next command. Tiers represent rough dependency order.
+const ESSENTIAL_TYPES = [
+  { type: 'REQ',  tier: 1, command: '/arckit:requirements',  label: 'Requirements' },
+  { type: 'STKE', tier: 1, command: '/arckit:stakeholders',  label: 'Stakeholder Analysis' },
+  { type: 'RISK', tier: 1, command: '/arckit:risk',          label: 'Risk Register' },
+  { type: 'SOBC', tier: 2, command: '/arckit:sobc',          label: 'Strategic Outline Business Case' },
+  { type: 'ADR',  tier: 3, command: '/arckit:adr',           label: 'Architecture Decision Record' },
+  { type: 'HLDR', tier: 3, command: '/arckit:hld-review',    label: 'High-Level Design Review' },
+  { type: 'TRAC', tier: 4, command: '/arckit:traceability',  label: 'Traceability Matrix' },
+  { type: 'CONF', tier: 4, command: '/arckit:conformance',   label: 'Conformance Assessment' },
+];
+
+const CONTEXTUAL_TYPES = [
+  { type: 'DPIA', command: '/arckit:dpia',   trigger: 'processing personal data' },
+  { type: 'SECD', command: '/arckit:secure', trigger: 'security-sensitive system' },
+  { type: 'TCOP', command: '/arckit:tcop',   trigger: 'UK Gov Service Standard' },
+  { type: 'DATA', command: '/arckit:data-model', trigger: 'DR-* requirements present' },
+];
+
+const STALE_THRESHOLD_DAYS = 90;
+
+function formatNavigator(graph, prompt) {
+  const projectArg = parseProjectArg(prompt, 'navigator');
+  const workingProjects = graph.projects.filter(p => p !== '000-global');
+  if (workingProjects.length === 0) return null;
+
+  let targets;
+  if (projectArg) {
+    targets = workingProjects.filter(p => p === projectArg || p.startsWith(projectArg));
+    if (targets.length === 0) return null;
+  } else if (workingProjects.length === 1) {
+    targets = workingProjects;
+  } else {
+    return null;  // ambiguous, exit silently
+  }
+
+  const blocks = [];
+  for (const projectName of targets) {
+    blocks.push(formatNavigatorProject(projectName, graph));
+  }
+  return blocks.join('\n\n---\n\n');
+}
+
+function formatNavigatorProject(projectName, graph) {
+  const baseline = new Date();
+  const projectId = projectName.match(/^(\d{3})/)?.[1] || '000';
+
+  const projectNodes = Object.values(graph.nodes).filter(n => n.project === projectName);
+  const typeSet = new Set(projectNodes.map(n => n.type));
+  const hasGlobalPrin = (graph.nodes && Object.values(graph.nodes).some(
+    n => n.project === '000-global' && n.type === 'PRIN'
+  ));
+
+  const present = ESSENTIAL_TYPES.filter(e => typeSet.has(e.type));
+  const missing = ESSENTIAL_TYPES.filter(e => !typeSet.has(e.type));
+  const coveragePct = ESSENTIAL_TYPES.length === 0
+    ? 0
+    : Math.round((present.length / ESSENTIAL_TYPES.length) * 100);
+
+  // DRAFT artifacts
+  const draftNodes = projectNodes.filter(n => /draft/i.test(n.status || ''));
+
+  // Stale artifacts (lastModified older than threshold)
+  const staleNodes = projectNodes
+    .map(n => {
+      const dateStr = n.lastModified || n.createdDate;
+      if (!dateStr) return null;
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return null;
+      const age = Math.floor((baseline.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+      return age >= STALE_THRESHOLD_DAYS ? { node: n, age } : null;
+    })
+    .filter(Boolean);
+
+  // Orphan artifacts: ARC docs with no incoming or outgoing edges in this project's namespace.
+  const projectFullIds = new Set(projectNodes.map(n => n.path.split('/').pop().replace(/\.md$/, '')));
+  const connected = new Set();
+  for (const e of graph.edges) {
+    if (projectFullIds.has(e.from)) {
+      connected.add(e.from);
+      connected.add(e.to);
+    }
+    if (projectFullIds.has(e.to.replace(/-v[\d.]+$/, '')) || projectFullIds.has(e.to)) {
+      connected.add(e.from);
+    }
+  }
+  const orphans = projectNodes.filter(n => {
+    const id = n.path.split('/').pop().replace(/\.md$/, '');
+    const shortId = id.replace(/-v[\d.]+$/, '');
+    return !connected.has(id) && !connected.has(shortId);
+  });
+
+  // Recommended next commands: missing essentials in tier order, contextual types as "consider"
+  const nextCommands = missing
+    .slice()
+    .sort((a, b) => a.tier - b.tier);
+
+  const rel = n => {
+    const filename = n.path.split('/').pop();
+    return n.subdir ? `${n.subdir}/${filename}` : filename;
+  };
+
+  const lines = [];
+  lines.push('## Navigator Pre-processor Complete (hook)');
+  lines.push('');
+  lines.push(`**Project**: ${projectName} (Project ${projectId})`);
+  lines.push(`**Artifacts present**: ${projectNodes.length}`);
+  lines.push(`**Essential coverage**: ${present.length} / ${ESSENTIAL_TYPES.length} doc types (${coveragePct}%)`);
+  lines.push(`**Global principles**: ${hasGlobalPrin ? 'present (000-global)' : 'NOT FOUND — recommend running /arckit:principles first'}`);
+  lines.push('');
+
+  lines.push('### Coverage by Tier');
+  lines.push('');
+  lines.push('| Tier | Doc Type | Command | Status |');
+  lines.push('|------|----------|---------|--------|');
+  for (const e of ESSENTIAL_TYPES) {
+    const status = typeSet.has(e.type) ? '✅ present' : '❌ missing';
+    lines.push(`| ${e.tier} | ${e.type} (${e.label}) | \`${e.command}\` | ${status} |`);
+  }
+  lines.push('');
+
+  lines.push('### Recommended Next Steps (tier order)');
+  lines.push('');
+  if (nextCommands.length === 0) {
+    lines.push('All essential doc types are present. Consider contextual artifacts below.');
+  } else {
+    for (const e of nextCommands) {
+      lines.push(`- **Tier ${e.tier}** — Run \`${e.command}\` to create the missing ${e.label} (${e.type}).`);
+    }
+  }
+  lines.push('');
+
+  lines.push('### Contextual Artifacts (run if applicable)');
+  lines.push('');
+  for (const c of CONTEXTUAL_TYPES) {
+    const has = typeSet.has(c.type);
+    if (has) continue;
+    lines.push(`- \`${c.command}\` — recommended if **${c.trigger}**.`);
+  }
+  lines.push('');
+
+  if (draftNodes.length > 0) {
+    lines.push('### DRAFT Artifacts');
+    lines.push('');
+    for (const n of draftNodes) {
+      lines.push(`- ${rel(n)} (status: ${n.status})`);
+    }
+    lines.push('');
+  }
+
+  if (staleNodes.length > 0) {
+    lines.push(`### Stale Artifacts (>${STALE_THRESHOLD_DAYS} days since last modified)`);
+    lines.push('');
+    for (const s of staleNodes.sort((a, b) => b.age - a.age)) {
+      lines.push(`- ${rel(s.node)} (${s.age} days, last modified ${s.node.lastModified || s.node.createdDate})`);
+    }
+    lines.push('');
+  }
+
+  if (orphans.length > 0) {
+    lines.push('### Orphan Artifacts (no cross-references)');
+    lines.push('');
+    for (const n of orphans) {
+      lines.push(`- ${rel(n)} (type: ${n.type})`);
+    }
+    lines.push('');
+  }
+
+  lines.push('### What to do');
+  lines.push('- **Render the report** using the tables and lists above.');
+  lines.push('- **Highlight the top recommendation** from "Recommended Next Steps".');
+  lines.push('- **Flag any DRAFT, stale, or orphan artifacts** that need attention.');
+  lines.push('- **No files are written** — navigator is read-only.');
 
   return lines.join('\n');
 }

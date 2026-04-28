@@ -349,6 +349,44 @@ test('graph-inject analyze is silent on ambiguous project', () => {
   }
 });
 
+test('graph-inject responds to /arckit:navigator', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    const { code, stdout, stderr } = runHook('/arckit:navigator 001', projectsDir);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+
+    assert.ok(ctx.includes('Navigator Pre-processor Complete'));
+    assert.ok(ctx.includes('Coverage by Tier'));
+    assert.ok(ctx.includes('Recommended Next Steps'));
+    // Fixture only has REQ; STKE and RISK should appear as missing in the
+    // tier-1 recommendations.
+    assert.ok(/Tier 1.*\/arckit:stakeholders/.test(ctx));
+    assert.ok(/Tier 1.*\/arckit:risk/.test(ctx));
+    // REQ is present, so it should NOT appear in recommendations.
+    assert.ok(!/Tier 1.*\/arckit:requirements/.test(ctx));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('graph-inject navigator is silent on ambiguous project', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    mkdirSync(join(projectsDir, '002-other'), { recursive: true });
+    writeFileSync(
+      join(projectsDir, '002-other', 'ARC-002-REQ-v1.0.md'),
+      `# REQ\n\n| Field | Value |\n|---|---|\n| **Document ID** | ARC-002-REQ-v1.0 |\n`
+    );
+    const { code, stdout } = runHook('/arckit:navigator', projectsDir);
+    assert.equal(code, 0);
+    assert.equal(stdout, '', 'should exit silently when ambiguous');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('graph-inject is silent when projects/ dir does not exist', () => {
   const root = mkdtempSync(join(tmpdir(), 'arckit-empty-'));
   try {

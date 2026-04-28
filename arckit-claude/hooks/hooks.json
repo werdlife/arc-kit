@@ -117,6 +117,16 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "matcher": "/arckit:navigator",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/graph-inject.mjs",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "PreToolUse": [
