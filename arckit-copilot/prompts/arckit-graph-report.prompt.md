@@ -38,6 +38,7 @@ The hook delivers this as a structured pre-processor block (`## Graph Report Pre
 ### Step 1: Read the hook output
 
 The hook block at the top of your context contains:
+
 - A summary line (projects scanned, total artifacts, total cross-references)
 - A project comparison table
 - A coverage-by-category matrix
@@ -50,7 +51,7 @@ If the hook block is missing (unlikely — it always fires for `/arckit:graph-re
 
 Output to the console (no file written) using this structure:
 
-```
+```text
 📊 ArcKit Graph Report — <N projects, M artifacts, K cross-refs>
 
 PROJECT COMPARISON
