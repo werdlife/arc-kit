@@ -11,7 +11,7 @@
  *   - /arckit:impact       ✅ handled here (replaces impact-scan.mjs)
  *   - /arckit:traceability ✅ handled here (replaces traceability-scan.mjs)
  *   - /arckit:health       ✅ handled here (replaces health-scan.mjs)
- *   - /arckit:analyze      ⏳ still served by governance-scan.mjs
+ *   - /arckit:analyze      ✅ handled here (replaces governance-scan.mjs)
  *
  * Hook Type: UserPromptSubmit (sync)
  * Input  (stdin):  JSON with prompt, cwd, etc.
@@ -52,6 +52,22 @@ const RECIPES = [
     // into the prompt context, so v1 fields only.
     opts: {},
     format: formatImpact,
+  },
+  {
+    command: 'analyze',
+    rawRe: /^\s*\/arckit[.:]+analyze\b/i,
+    expandedRe: /description:\s*Perform comprehensive governance quality analysis|#\s*Identify inconsistencies, gaps, ambiguities/i,
+    // Scan everything (incl. 000-global for principles); formatter filters.
+    opts: {
+      excludeGlobal: false,
+      withNodeMetadata: true,
+      withContent: true,
+      withRequirements: true,
+      withVendors: true,
+      withPrinciples: true,
+      withRisks: true,
+    },
+    format: formatAnalyze,
   },
   {
     command: 'health',
@@ -257,6 +273,317 @@ function formatImpact(graph, prompt) {
   return lines.join('\n');
 }
 
+function formatAnalyze(graph, prompt) {
+  const projectArg = parseProjectArg(prompt, 'analyze');
+  const allProjects = /\ball\s+projects?\b/i.test(prompt);
+
+  const workingProjects = graph.projects.filter(p => p !== '000-global');
+  if (workingProjects.length === 0) return null;
+
+  let targets;
+  if (projectArg) {
+    targets = workingProjects.filter(p => p === projectArg || p.startsWith(projectArg));
+    if (targets.length === 0) return null;
+  } else if (allProjects) {
+    targets = workingProjects;
+  } else if (workingProjects.length === 1) {
+    targets = workingProjects;
+  } else {
+    return null; // ambiguous, exit silently
+  }
+
+  const arckitVersion = readArckitVersion();
+  const blocks = [];
+
+  for (const projectName of targets) {
+    blocks.push(formatAnalyzeProject(projectName, graph, arckitVersion));
+  }
+
+  return blocks.join('\n\n---\n\n');
+}
+
+const PLACEHOLDER_RE = /\b(TODO|TBD|TBC)\b|\?\?\?|\[PENDING\]/gi;
+
+function formatAnalyzeProject(projectName, graph, arckitVersion) {
+  const projectId = projectName.match(/^(\d{3})/)?.[1] || '000';
+
+  const projectNodes = Object.values(graph.nodes).filter(n => n.project === projectName);
+  const rel = n => {
+    const filename = n.path.split('/').pop();
+    return n.subdir ? `${n.subdir}/${filename}` : filename;
+  };
+
+  const artifactMeta = projectNodes.map(n => ({
+    relPath: rel(n),
+    filename: n.path.split('/').pop(),
+    docType: n.type,
+    version: n.version,
+    status: n.status,
+    classification: n.classification,
+    owner: n.owner,
+    lastModified: n.lastModified,
+    content: n.content,
+    placeholders: (n.content?.match(PLACEHOLDER_RE) || []).length,
+  }));
+  const placeholderCounts = artifactMeta
+    .filter(m => m.placeholders > 0)
+    .map(m => ({ file: m.relPath, count: m.placeholders }));
+
+  const typeSet = new Set(artifactMeta.map(m => m.docType).filter(Boolean));
+  const reqFiles = artifactMeta.filter(m => m.docType === 'REQ').map(m => m.filename);
+
+  // Missing recommended artifacts
+  const recommended = [
+    { type: 'STKE', command: '/arckit:stakeholders' },
+    { type: 'RISK', command: '/arckit:risk' },
+    { type: 'SOBC', command: '/arckit:sobc' },
+    { type: 'DATA', command: '/arckit:data-model' },
+    { type: 'TRAC', command: '/arckit:traceability' },
+  ];
+  const hasDataReqs = artifactMeta.some(m =>
+    m.docType === 'REQ' && /\bDR-\d{3}\b/.test(m.content || '')
+  );
+  const missingRecommended = recommended.filter(r => {
+    if (typeSet.has(r.type)) return false;
+    if (r.type === 'DATA' && !hasDataReqs) return false;
+    return true;
+  });
+
+  const presentUkGov = ['TCOP', 'AIPB', 'ATRS'].filter(t => typeSet.has(t));
+  const presentMod = ['SECD-MOD'].filter(t => typeSet.has(t));
+
+  // Requirements + coverage (single-project view)
+  const allRequirements = (graph.requirements || {})[projectName] || [];
+  const priorityDist = { MUST: 0, SHOULD: 0, MAY: 0 };
+  for (const req of allRequirements) {
+    if (priorityDist[req.priority] !== undefined) priorityDist[req.priority]++;
+  }
+
+  const DESIGN_TYPES = new Set(['ADR', 'HLD', 'DLD', 'HLDR', 'DLDR']);
+  const refMap = {};
+  for (const n of projectNodes) {
+    if (n.type === 'REQ') continue;
+    if (!Array.isArray(n.reqIds) || n.reqIds.length === 0) continue;
+    let label = n.type;
+    if (DESIGN_TYPES.has(n.type) && n.vendor && (n.type === 'HLD' || n.type === 'DLD')) {
+      label = `Vendor ${n.type}`;
+    } else if (!DESIGN_TYPES.has(n.type) && n.vendor) {
+      label = 'Vendor Doc';
+    }
+    for (const id of n.reqIds) {
+      if (!refMap[id]) refMap[id] = [];
+      refMap[id].push({ file: rel(n), type: label, vendor: n.vendor });
+    }
+  }
+
+  const coverage = { total: allRequirements.length, covered: 0, orphan: [], byCategory: {}, byPriority: {} };
+  for (const req of allRequirements) {
+    const isCovered = !!(refMap[req.id] && refMap[req.id].length > 0);
+    if (isCovered) coverage.covered++;
+    else coverage.orphan.push(req);
+    if (!coverage.byCategory[req.category]) coverage.byCategory[req.category] = { total: 0, covered: 0 };
+    coverage.byCategory[req.category].total++;
+    if (isCovered) coverage.byCategory[req.category].covered++;
+    if (!coverage.byPriority[req.priority]) coverage.byPriority[req.priority] = { total: 0, covered: 0 };
+    coverage.byPriority[req.priority].total++;
+    if (isCovered) coverage.byPriority[req.priority].covered++;
+  }
+
+  // Principles (always from 000-global)
+  const allPrinciples = (graph.principles || {})['000-global'] || [];
+  const globalPrinFiles = [...new Set(allPrinciples.map(p => p.sourceFile))];
+
+  // Risks
+  const allRisks = (graph.risks || {})[projectName] || [];
+  const riskSeverity = { 'Very High': 0, 'High': 0, 'Medium': 0, 'Low': 0, 'Very Low': 0 };
+  for (const risk of allRisks) {
+    const m = (risk.inherent || '').match(/\b(Very High|High|Medium|Low|Very Low)\b/i);
+    if (m) {
+      const bucket = m[1].replace(/\b\w/g, c => c.toUpperCase());
+      if (riskSeverity[bucket] !== undefined) riskSeverity[bucket]++;
+    }
+  }
+
+  // Vendors
+  const vendors = (graph.vendors || {})[projectName] || [];
+
+  // ── Output ──
+  const lines = [];
+  lines.push('## Governance Scan Pre-processor Complete');
+  lines.push('');
+  lines.push('**All artifact metadata, requirements, principles, risks, and cross-references pre-extracted.**');
+  lines.push('');
+
+  lines.push('### Scan Parameters');
+  lines.push(`- **Project**: ${projectName}`);
+  lines.push(`- **Project ID**: ${projectId}`);
+  lines.push(`- **ArcKit Version**: ${arckitVersion}`);
+  lines.push(`- **Artifacts scanned**: ${artifactMeta.length}`);
+  lines.push(`- **Artifact types found**: ${[...typeSet].sort().join(', ')}`);
+  lines.push(`- **REQ files**: ${reqFiles.length > 0 ? reqFiles.join(', ') : 'none'}`);
+  lines.push(`- **PRIN files (global)**: ${globalPrinFiles.length > 0 ? globalPrinFiles.join(', ') : 'none'}`);
+  lines.push(`- **Vendors**: ${vendors.length > 0 ? vendors.map(v => v.name).join(', ') : 'none'}`);
+  lines.push('');
+
+  lines.push('### Artifact Inventory');
+  lines.push('');
+  lines.push('| File | Doc Type | Version | Status | Classification | Owner | Last Modified |');
+  lines.push('|------|----------|---------|--------|----------------|-------|---------------|');
+  for (const meta of artifactMeta) {
+    lines.push(`| ${meta.relPath} | ${meta.docType || '?'} | ${meta.version || '?'} | ${meta.status || '—'} | ${meta.classification || '—'} | ${meta.owner || '—'} | ${meta.lastModified || '—'} |`);
+  }
+  lines.push('');
+
+  if (missingRecommended.length > 0) {
+    lines.push('### Missing Recommended Artifacts');
+    lines.push('');
+    for (const m of missingRecommended) {
+      lines.push(`- **${m.type}**: Not found — create with \`${m.command}\``);
+    }
+    lines.push('');
+  }
+
+  lines.push('### Compliance Artifact Presence');
+  lines.push('');
+  lines.push(`- **UK Gov (TCOP/AIPB/ATRS)**: ${presentUkGov.length > 0 ? presentUkGov.join(', ') : 'none found'}`);
+  lines.push(`- **MOD (SECD-MOD)**: ${presentMod.length > 0 ? presentMod.join(', ') : 'none found'}`);
+  lines.push('');
+
+  if (allRequirements.length > 0) {
+    lines.push('### Requirements Inventory');
+    lines.push('');
+    lines.push('| Req ID | Category | Priority | Description | Covered |');
+    lines.push('|--------|----------|----------|-------------|---------|');
+    for (const req of allRequirements) {
+      const isCovered = !!(refMap[req.id] && refMap[req.id].length > 0);
+      const desc = req.description.length > 80 ? req.description.substring(0, 77) + '...' : req.description;
+      lines.push(`| ${req.id} | ${req.category} | ${req.priority} | ${desc} | ${isCovered ? 'Yes' : 'No'} |`);
+    }
+    lines.push('');
+
+    lines.push('### Priority Distribution');
+    lines.push('');
+    lines.push(`- **MUST**: ${priorityDist.MUST}`);
+    lines.push(`- **SHOULD**: ${priorityDist.SHOULD}`);
+    lines.push(`- **MAY**: ${priorityDist.MAY}`);
+    lines.push('');
+
+    lines.push('### Coverage Summary');
+    lines.push('');
+    lines.push('| Metric | Covered | Total | Pct |');
+    lines.push('|--------|---------|-------|-----|');
+    lines.push(`| Overall | ${coverage.covered} | ${coverage.total} | ${pct(coverage.covered, coverage.total)} |`);
+    for (const cat of ['Business', 'Functional', 'Non-Functional', 'Integration', 'Data']) {
+      const c = coverage.byCategory[cat];
+      if (!c) continue;
+      lines.push(`| ${cat} | ${c.covered} | ${c.total} | ${pct(c.covered, c.total)} |`);
+    }
+    for (const pri of ['MUST', 'SHOULD', 'MAY']) {
+      const p = coverage.byPriority[pri];
+      if (!p) continue;
+      lines.push(`| ${pri} priority | ${p.covered} | ${p.total} | ${pct(p.covered, p.total)} |`);
+    }
+    lines.push('');
+
+    if (coverage.orphan.length > 0) {
+      lines.push('### Orphan Requirements (no design coverage)');
+      lines.push('');
+      for (const req of coverage.orphan) {
+        lines.push(`- **${req.id}** (${req.priority}): ${req.description}`);
+      }
+      lines.push('');
+    }
+  }
+
+  if (allPrinciples.length > 0) {
+    lines.push('### Principles');
+    lines.push('');
+    lines.push('| # | Title | Category | Statement | Gates Passed |');
+    lines.push('|---|-------|----------|-----------|--------------|');
+    for (const p of allPrinciples) {
+      const stmt = (p.statement || '').length > 60 ? p.statement.substring(0, 57) + '...' : (p.statement || '');
+      const gates = p.gateCount > 0 ? `${p.gatesPassed}/${p.gateCount}` : '—';
+      lines.push(`| ${p.id} | ${p.title} | ${p.category} | ${stmt} | ${gates} |`);
+    }
+    lines.push('');
+  }
+
+  if (allRisks.length > 0) {
+    lines.push('### Risks');
+    lines.push('');
+    lines.push('| Risk ID | Title | Category | Inherent | Residual | Owner | Status | Response |');
+    lines.push('|---------|-------|----------|----------|----------|-------|--------|----------|');
+    for (const r of allRisks) {
+      const title = (r.title || '').length > 40 ? r.title.substring(0, 37) + '...' : (r.title || '');
+      lines.push(`| ${r.id} | ${title} | ${r.category} | ${r.inherent} | ${r.residual} | ${r.owner} | ${r.status} | ${r.response} |`);
+    }
+    lines.push('');
+    lines.push('**Risk Severity Summary**:');
+    for (const [bucket, count] of Object.entries(riskSeverity)) {
+      if (count > 0) lines.push(`- ${bucket}: ${count}`);
+    }
+    lines.push('');
+  }
+
+  if (vendors.length > 0) {
+    lines.push('### Vendor Inventory');
+    lines.push('');
+    for (const v of vendors) {
+      lines.push(`#### ${v.name}`);
+      lines.push(`- **Documents**: ${v.docs.length > 0 ? v.docs.join(', ') : 'none'}`);
+      if (v.reviews.length > 0) {
+        for (const rv of v.reviews) {
+          lines.push(`- **Review**: ${rv.file} — Verdict: ${rv.verdict || 'not determined'}`);
+        }
+      }
+      lines.push('');
+    }
+  }
+
+  if (Object.keys(refMap).length > 0) {
+    lines.push('### Cross-Reference Map');
+    lines.push('');
+    lines.push('| Req ID | Referenced By |');
+    lines.push('|--------|---------------|');
+    for (const [reqId, refs] of Object.entries(refMap).sort()) {
+      lines.push(`| ${reqId} | ${refs.map(r => r.file).join(', ')} |`);
+    }
+    lines.push('');
+  }
+
+  if (placeholderCounts.length > 0) {
+    lines.push('### Placeholder Counts (TODO/TBD/TBC/???/[PENDING])');
+    lines.push('');
+    lines.push('| File | Count |');
+    lines.push('|------|-------|');
+    for (const pc of placeholderCounts.sort((a, b) => b.count - a.count)) {
+      lines.push(`| ${pc.file} | ${pc.count} |`);
+    }
+    lines.push('');
+  }
+
+  lines.push('### Document Control Fields');
+  lines.push('');
+  lines.push('| File | Classification | Status | Owner |');
+  lines.push('|------|----------------|--------|-------|');
+  for (const meta of artifactMeta) {
+    lines.push(`| ${meta.relPath} | ${meta.classification || '—'} | ${meta.status || '—'} | ${meta.owner || '—'} |`);
+  }
+  lines.push('');
+
+  lines.push('### What to do');
+  lines.push('');
+  lines.push('**Rule 1 — Hook tables are primary data.** Use them directly for all detection passes. Do NOT re-read any artifact file listed in the Artifact Inventory table.');
+  lines.push('');
+  lines.push('**Rule 2 — Targeted reads only.** When a detection pass needs evidence beyond hook tables (e.g. full principle validation criteria, TCoP per-point scores, risk appetite thresholds), use Grep for specific patterns or Read with offset/limit. NEVER read an entire artifact file.');
+  lines.push('');
+  lines.push('**Rule 3 — Skip Steps 1-2 entirely.** Go directly to Step 3 (Build Semantic Models) using the pre-extracted tables. Still read the template (Step 0) for output formatting.');
+  lines.push('');
+  lines.push('Passes A, C, K need zero file reads — hook data is sufficient. Passes B, D, E, F, G, H, I, J may need surgical Grep reads for specific evidence sections only.');
+
+  return lines.join('\n');
+}
+
 function formatHealth(graph, prompt, repoRoot) {
   const text = prompt.replace(/^\/arckit[.:]+health\s*/i, '');
   const severityArg = (text.match(/\bSEVERITY\s*=\s*(HIGH|MEDIUM|LOW)/i)?.[1] || 'LOW').toUpperCase();
@@ -386,7 +713,7 @@ function formatHealth(graph, prompt, repoRoot) {
     }
 
     // Rule 6: VERSION-DRIFT
-    for (const [type, group] of Object.entries(byType)) {
+    for (const group of Object.values(byType)) {
       if (group.length < 2) continue;
       const sorted = [...group].sort((a, b) => parseFloat(b.version || '0') - parseFloat(a.version || '0'));
       const latest = sorted[0];
