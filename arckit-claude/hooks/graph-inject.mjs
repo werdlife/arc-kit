@@ -15,6 +15,8 @@
  *
  * Graph-aware new commands (#359):
  *   - /arckit:navigator    "what's next" project GPS — coverage + gaps + recommended commands
+ *   - /arckit:graph-report governance metrics dashboard — coverage by category, cross-ref
+ *                          density, compliance readiness, multi-project comparison
  *
  * Hook Type: UserPromptSubmit (sync)
  * Input  (stdin):  JSON with prompt, cwd, etc.
@@ -36,6 +38,7 @@ import {
   extractRequirementIds,
 } from './hook-utils.mjs';
 import { scanAllArtifacts } from './graph-utils.mjs';
+import { DOC_TYPES } from '../config/doc-types.mjs';
 
 // ── Recipe table ───────────────────────────────────────────────────────────
 
@@ -55,6 +58,13 @@ const RECIPES = [
     // into the prompt context, so v1 fields only.
     opts: {},
     format: formatImpact,
+  },
+  {
+    command: 'graph-report',
+    rawRe: /^\s*\/arckit[.:]+graph-report\b/i,
+    expandedRe: /description:\s*Governance metrics dashboard|#\s*Graph Report/i,
+    opts: { excludeGlobal: false, withNodeMetadata: false },
+    format: formatGraphReport,
   },
   {
     command: 'navigator',
@@ -286,6 +296,142 @@ function formatImpact(graph, prompt) {
   lines.push('- Classify impact severity using node severity field');
   lines.push('- Output impact chain table, summary counts, and recommended actions');
   lines.push('- Suggest specific /arckit commands to re-run for HIGH severity impacts');
+
+  return lines.join('\n');
+}
+
+// Doc types whose category yields HIGH severity in classifySeverity().
+// Used by /arckit:graph-report for "compliance readiness" scoring.
+const HIGH_SEVERITY_TYPES = ['TCOP', 'SECD', 'SECD-MOD', 'DPIA', 'SVCASS',
+  'RISK', 'TRAC', 'CONF', 'PRIN-COMP', 'AIPB', 'ATRS', 'JSP936'];
+
+function formatGraphReport(graph) {
+  const workingProjects = graph.projects.filter(p => p !== '000-global');
+  if (workingProjects.length === 0) return null;
+
+  // Build per-project metrics
+  const rows = [];
+  let categoryTotals = null;
+
+  for (const projectName of workingProjects) {
+    const projectNodes = Object.values(graph.nodes).filter(n => n.project === projectName);
+    const projectFullIds = new Set(projectNodes.map(n => n.path.split('/').pop().replace(/\.md$/, '')));
+
+    // Edges where source is in this project
+    const projectEdges = graph.edges.filter(e => projectFullIds.has(e.from));
+    const density = projectNodes.length === 0 ? 0 : projectEdges.length / projectNodes.length;
+
+    // Category coverage — group nodes by DOC_TYPES[].category
+    const presentTypes = new Set(projectNodes.map(n => n.type).filter(Boolean));
+    const presentByCategory = {};
+    for (const t of presentTypes) {
+      const info = DOC_TYPES[t];
+      if (!info) continue;
+      if (!presentByCategory[info.category]) presentByCategory[info.category] = new Set();
+      presentByCategory[info.category].add(t);
+    }
+
+    // Total possible types per category (computed once, reused)
+    if (!categoryTotals) {
+      categoryTotals = {};
+      for (const [type, info] of Object.entries(DOC_TYPES)) {
+        if (!categoryTotals[info.category]) categoryTotals[info.category] = new Set();
+        categoryTotals[info.category].add(type);
+      }
+    }
+
+    // Compliance readiness: present HIGH-severity types vs total HIGH-severity types
+    const presentHigh = HIGH_SEVERITY_TYPES.filter(t => presentTypes.has(t));
+    const compliancePct = HIGH_SEVERITY_TYPES.length === 0
+      ? 0
+      : Math.round((presentHigh.length / HIGH_SEVERITY_TYPES.length) * 100);
+
+    rows.push({
+      project: projectName,
+      artifactCount: projectNodes.length,
+      edgeCount: projectEdges.length,
+      density,
+      presentByCategory,
+      presentHigh,
+      compliancePct,
+    });
+  }
+
+  // Pre-sort categories: known order, then anything else alphabetically
+  const CATEGORY_ORDER = ['Discovery', 'Planning', 'Architecture', 'Governance',
+    'Compliance', 'Operations', 'Procurement', 'Research', 'Reporting'];
+  const allCategories = Object.keys(categoryTotals).sort((a, b) => {
+    const ai = CATEGORY_ORDER.indexOf(a);
+    const bi = CATEGORY_ORDER.indexOf(b);
+    if (ai === -1 && bi === -1) return a.localeCompare(b);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  const lines = [];
+  lines.push('## Graph Report Pre-processor Complete (hook)');
+  lines.push('');
+  lines.push(`**Projects scanned**: ${workingProjects.length}`);
+  lines.push(`**Total artifacts**: ${rows.reduce((s, r) => s + r.artifactCount, 0)}`);
+  lines.push(`**Total cross-references**: ${rows.reduce((s, r) => s + r.edgeCount, 0)}`);
+  lines.push('');
+
+  lines.push('### Project Comparison');
+  lines.push('');
+  lines.push('| Project | Artifacts | Cross-refs | Density (refs/doc) | Compliance readiness |');
+  lines.push('|---------|-----------|------------|--------------------|----------------------|');
+  for (const r of rows) {
+    lines.push(`| ${r.project} | ${r.artifactCount} | ${r.edgeCount} | ${r.density.toFixed(2)} | ${r.presentHigh.length}/${HIGH_SEVERITY_TYPES.length} (${r.compliancePct}%) |`);
+  }
+  lines.push('');
+
+  lines.push('### Coverage by Category');
+  lines.push('');
+  const headerCells = ['Project', ...allCategories];
+  lines.push('| ' + headerCells.join(' | ') + ' |');
+  lines.push('|' + headerCells.map(() => '---').join('|') + '|');
+  for (const r of rows) {
+    const cells = [r.project];
+    for (const cat of allCategories) {
+      const present = r.presentByCategory[cat]?.size || 0;
+      const total = categoryTotals[cat].size;
+      const pctVal = total === 0 ? 0 : Math.round((present / total) * 100);
+      cells.push(`${present}/${total} (${pctVal}%)`);
+    }
+    lines.push('| ' + cells.join(' | ') + ' |');
+  }
+  lines.push('');
+
+  lines.push('### Compliance Readiness (HIGH-severity doc types)');
+  lines.push('');
+  lines.push(`Tracks presence of ${HIGH_SEVERITY_TYPES.length} HIGH-severity types: ${HIGH_SEVERITY_TYPES.join(', ')}`);
+  lines.push('');
+  for (const r of rows) {
+    const missing = HIGH_SEVERITY_TYPES.filter(t => !r.presentHigh.includes(t));
+    lines.push(`#### ${r.project} — ${r.compliancePct}%`);
+    lines.push('');
+    lines.push(`- **Present**: ${r.presentHigh.length > 0 ? r.presentHigh.join(', ') : '_none_'}`);
+    lines.push(`- **Missing**: ${missing.length > 0 ? missing.join(', ') : '_all present_'}`);
+    lines.push('');
+  }
+
+  lines.push('### Cross-Reference Density Interpretation');
+  lines.push('');
+  lines.push('| Density | Meaning |');
+  lines.push('|---------|---------|');
+  lines.push('| 0.0 | No cross-references — artifacts are isolated, traceability is broken |');
+  lines.push('| 0.0–0.5 | Sparse — most artifacts stand alone, suggesting traceability gaps |');
+  lines.push('| 0.5–1.5 | Moderate — typical for early-stage projects |');
+  lines.push('| 1.5–3.0 | Healthy — good traceability for a mature project |');
+  lines.push('| 3.0+ | Dense — every artifact references multiple others (mature, well-governed) |');
+  lines.push('');
+
+  lines.push('### What to do');
+  lines.push('- **Render the report** using the tables above.');
+  lines.push('- **Highlight outliers**: lowest compliance readiness, lowest density, projects missing whole categories.');
+  lines.push('- **Recommend remediation**: missing HIGH-severity types → run the corresponding `/arckit:*` command.');
+  lines.push('- **No files are written** — graph-report is read-only.');
 
   return lines.join('\n');
 }
