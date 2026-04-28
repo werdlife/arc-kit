@@ -139,6 +139,57 @@ test('graph-inject responds to /arckit:impact', () => {
   }
 });
 
+test('graph-inject responds to /arckit:traceability', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    const { code, stdout, stderr } = runHook('/arckit:traceability 001', projectsDir);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    assert.ok(stdout.length > 0, 'expected stdout output');
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+
+    assert.ok(ctx.includes('Traceability Pre-processor Complete'));
+    assert.ok(ctx.includes('001-fixture'));
+    assert.ok(ctx.includes('REQUIREMENTS — use these directly'));
+    assert.ok(ctx.includes('BR-001'));
+    assert.ok(ctx.includes('COVERAGE SUMMARY'));
+    assert.ok(ctx.includes('Design Documents Scanned'));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('graph-inject traceability is silent on ambiguous project', () => {
+  // Two projects, no project arg → exit silently.
+  const { root, projectsDir } = makeFixture();
+  try {
+    mkdirSync(join(projectsDir, '002-other'), { recursive: true });
+    writeFileSync(
+      join(projectsDir, '002-other', 'ARC-002-REQ-v1.0.md'),
+      `# REQ — ARC-002-REQ-v1.0\n\n| Field | Value |\n|---|---|\n| **Document ID** | ARC-002-REQ-v1.0 |\n\n### BR-001: Other project\n`
+    );
+    const { code, stdout } = runHook('/arckit:traceability', projectsDir);
+    assert.equal(code, 0);
+    assert.equal(stdout, '', 'should exit silently when project is ambiguous');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('graph-inject traceability is silent when no requirements exist', () => {
+  // Make a fixture without REQ docs.
+  const root = mkdtempSync(join(tmpdir(), 'arckit-no-req-'));
+  const projectsDir = join(root, 'projects');
+  mkdirSync(join(projectsDir, '001-empty', 'decisions'), { recursive: true });
+  try {
+    const { code, stdout } = runHook('/arckit:traceability 001', projectsDir);
+    assert.equal(code, 0);
+    assert.equal(stdout, '', 'should exit silently when no REQs found');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('graph-inject is silent when projects/ dir does not exist', () => {
   const root = mkdtempSync(join(tmpdir(), 'arckit-empty-'));
   try {
