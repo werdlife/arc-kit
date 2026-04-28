@@ -45,6 +45,7 @@ The hook delivers this as a structured pre-processor block (`## Navigator Pre-pr
 ### Step 1: Read the hook output
 
 The hook block at the top of your context contains:
+
 - A coverage summary line (`Essential coverage: N/8 doc types (X%)`)
 - Tier table showing each essential doc type's status
 - A prioritised "Recommended Next Steps" list
@@ -56,7 +57,7 @@ If the hook block is missing (unlikely — it always fires for `$arckit-navigato
 
 Output to the console (no file written) using this structure:
 
-```
+```text
 🧭 ArcKit Navigator — <project name>
 
 Coverage: <N>/<8> essential doc types (<X>%)
