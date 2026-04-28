@@ -113,7 +113,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/impact-scan.mjs",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/graph-inject.mjs",
             "timeout": 20
           }
         ]

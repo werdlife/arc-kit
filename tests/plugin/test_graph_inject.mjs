@@ -109,6 +109,36 @@ test('graph-inject is silent for non-matching prompts', () => {
   }
 });
 
+test('graph-inject responds to /arckit:impact', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    const { code, stdout, stderr } = runHook('/arckit:impact ARC-001-REQ', projectsDir);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+    assert.ok(ctx.includes('Impact Pre-processor Complete'));
+    assert.ok(ctx.includes('DEPENDENCY GRAPH (JSON)'));
+    assert.ok(ctx.includes('Impact Severity Classification'));
+    assert.ok(ctx.includes('ARC-001-REQ'));
+
+    // Critical: impact must NOT include v2 enrichments — node payload must
+    // contain only v1 keys to keep the injected context lean.
+    const jsonMatch = ctx.match(/```json\n([\s\S]+?)\n```/);
+    assert.ok(jsonMatch, 'expected fenced JSON block');
+    const parsed = JSON.parse(jsonMatch[1]);
+    const v1Keys = ['type', 'project', 'path', 'title', 'status', 'severity',
+                    'createdDate', 'lastModified'].sort();
+    for (const [id, node] of Object.entries(parsed.nodes)) {
+      assert.deepEqual(
+        Object.keys(node).sort(), v1Keys,
+        `node ${id} leaks v2 fields into impact context`
+      );
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('graph-inject is silent when projects/ dir does not exist', () => {
   const root = mkdtempSync(join(tmpdir(), 'arckit-empty-'));
   try {

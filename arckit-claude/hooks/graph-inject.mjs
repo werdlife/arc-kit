@@ -8,7 +8,7 @@
  *
  * Migration progress (#162):
  *   - /arckit:search       ✅ handled here (replaces search-scan.mjs)
- *   - /arckit:impact       ⏳ still served by impact-scan.mjs
+ *   - /arckit:impact       ✅ handled here (replaces impact-scan.mjs)
  *   - /arckit:health       ⏳ still served by health-scan.mjs
  *   - /arckit:traceability ⏳ still served by traceability-scan.mjs
  *   - /arckit:analyze      ⏳ still served by governance-scan.mjs
@@ -31,6 +31,15 @@ const RECIPES = [
     expandedRe: /description:\s*Search across all project artifacts/i,
     opts: { withNodeMetadata: true, withPreview: true },
     format: formatSearch,
+  },
+  {
+    command: 'impact',
+    rawRe: /^\s*\/arckit[.:]+impact\b/i,
+    expandedRe: /description:\s*Analyse the blast radius/i,
+    // Keep node payload lean — impact serializes the entire nodes object
+    // into the prompt context, so v1 fields only.
+    opts: {},
+    format: formatImpact,
   },
 ];
 
@@ -81,6 +90,43 @@ function formatSearch(graph, prompt) {
   lines.push('- Score results: title match=10, control fields=5, preview=3, filename=2');
   lines.push('- Output ranked table with top result preview');
   lines.push('- If no results, suggest broadening the search');
+
+  return lines.join('\n');
+}
+
+function formatImpact(graph, prompt) {
+  const text = prompt.replace(/^\/arckit[.:]+impact\s*/i, '').trim();
+  const { nodes, edges, reqIndex, projects } = graph;
+  const nodeCount = Object.keys(nodes).length;
+  const edgeCount = edges.length;
+  const reqCount = Object.keys(reqIndex).length;
+
+  const lines = [];
+  lines.push('## Impact Pre-processor Complete (hook)');
+  lines.push('');
+  lines.push(`**Dependency graph built: ${nodeCount} documents, ${edgeCount} cross-references, ${reqCount} requirement IDs across ${projects.length} project(s).**`);
+  lines.push('');
+  lines.push(`**User query:** ${text || '(no query provided)'}`);
+  lines.push('');
+  lines.push('### DEPENDENCY GRAPH (JSON)');
+  lines.push('');
+  lines.push('```json');
+  lines.push(JSON.stringify({ nodes, edges, reqIndex }, null, 2));
+  lines.push('```');
+  lines.push('');
+  lines.push('### Impact Severity Classification');
+  lines.push('| Category | Severity | Document Types |');
+  lines.push('|----------|----------|---------------|');
+  lines.push('| Compliance/Governance | HIGH | TCOP, SECD, DPIA, SVCASS, RISK, TRAC, CONF |');
+  lines.push('| Architecture | MEDIUM | HLDR, DLDR, ADR, DATA, DIAG, PLAT |');
+  lines.push('| Planning/Reporting | LOW | PLAN, ROAD, BKLG, SOBC, OPS, STORY, PRES |');
+  lines.push('');
+  lines.push('### Instructions');
+  lines.push('- Parse query: ARC document ID, requirement ID (e.g. BR-003), or type+project');
+  lines.push('- Perform reverse traversal through edges (max depth 5)');
+  lines.push('- Classify impact severity using node severity field');
+  lines.push('- Output impact chain table, summary counts, and recommended actions');
+  lines.push('- Suggest specific /arckit commands to re-run for HIGH severity impacts');
 
   return lines.join('\n');
 }
