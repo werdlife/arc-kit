@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `/arckit.navigator` — project-level GPS for ArcKit. Reports coverage against an essential 8-doc-type baseline (REQ, STKE, RISK, SOBC, ADR, HLDR, TRAC, CONF), surfaces DRAFT / stale (>90 day) / orphan artifacts, and recommends the next slash command to run ordered by tier. Read-only — writes no files. Backed by the consolidated `graph-inject.mjs` hook (#359).
+- `/arckit.graph-report` — multi-project governance metrics dashboard. Cross-project comparison table (artifacts, cross-references, density, compliance readiness), coverage-by-category matrix across all DOC_TYPES categories, per-project compliance readiness against 12 HIGH-severity types (TCOP / SECD / SECD-MOD / DPIA / SVCASS / RISK / TRAC / CONF / PRIN-COMP / AIPB / ATRS / JSP936), and a density-interpretation legend. Read-only (#359).
 
 ## [4.9.4] - 2026-04-28
 

@@ -387,6 +387,41 @@ test('graph-inject navigator is silent on ambiguous project', () => {
   }
 });
 
+test('graph-inject responds to /arckit:graph-report', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    // Add a second project so the comparison table has 2 rows
+    mkdirSync(join(projectsDir, '002-second'), { recursive: true });
+    writeFileSync(
+      join(projectsDir, '002-second', 'ARC-002-REQ-v1.0.md'),
+      `# REQ\n\n| Field | Value |\n|---|---|\n| **Document ID** | ARC-002-REQ-v1.0 |\n\nReferences ARC-002-RISK.\n`
+    );
+    writeFileSync(
+      join(projectsDir, '002-second', 'ARC-002-RISK-v1.0.md'),
+      `# RISK\n\n| Field | Value |\n|---|---|\n| **Document ID** | ARC-002-RISK-v1.0 |\n`
+    );
+
+    const { code, stdout, stderr } = runHook('/arckit:graph-report', projectsDir);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+
+    assert.ok(ctx.includes('Graph Report Pre-processor Complete'));
+    assert.ok(ctx.includes('Project Comparison'));
+    assert.ok(ctx.includes('Coverage by Category'));
+    assert.ok(ctx.includes('Compliance Readiness'));
+    assert.ok(ctx.includes('001-fixture'));
+    assert.ok(ctx.includes('002-second'));
+    // Compliance readiness section labels HIGH-severity types
+    assert.ok(ctx.includes('TCOP'));
+    assert.ok(ctx.includes('RISK'));
+    // Density interpretation legend present
+    assert.ok(ctx.includes('Density'));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('graph-inject is silent when projects/ dir does not exist', () => {
   const root = mkdtempSync(join(tmpdir(), 'arckit-empty-'));
   try {
