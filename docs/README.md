@@ -238,6 +238,7 @@ See the [full index](guides/roles/README.md) for details.
 | `/arckit.presentation` | [presentation.md](guides/presentation.md) | ✅ Complete |
 | `/arckit.health` | [artifact-health.md](guides/artifact-health.md) | ✅ Complete |
 | `/arckit.impact` | [impact.md](guides/impact.md) | ✅ Complete |
+| `/arckit.navigator` | [navigator.md](guides/navigator.md) | ✅ Complete |
 | `/arckit.search` | [search.md](guides/search.md) | ✅ Complete |
 | `/arckit.start` | [start.md](guides/start.md) | ✅ Complete |
 | `/arckit.template-builder` | [template-builder.md](guides/template-builder.md) | ✅ Complete |
@@ -246,7 +247,7 @@ See the [full index](guides/roles/README.md) for details.
 | `/arckit.maturity-model` | [maturity-model.md](guides/maturity-model.md) | ✅ Complete |
 | `/arckit.score` | [score.md](guides/score.md) | ✅ Complete |
 
-**Coverage**: 68/68 commands documented (100%)
+**Coverage**: 69/69 commands documented (100%)
 
 ---
 

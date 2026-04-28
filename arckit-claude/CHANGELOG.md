@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `/arckit.navigator` — project-level GPS for ArcKit. Reports coverage against an essential 8-doc-type baseline (REQ, STKE, RISK, SOBC, ADR, HLDR, TRAC, CONF), surfaces DRAFT / stale (>90 day) / orphan artifacts, and recommends the next slash command to run ordered by tier. Read-only — writes no files. Backed by the consolidated `graph-inject.mjs` hook (#359).
+
 ## [4.9.4] - 2026-04-28
 
 ### Docs
