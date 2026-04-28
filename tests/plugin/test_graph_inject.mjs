@@ -8,7 +8,7 @@
  * Run with:  node tests/plugin/test_graph_inject.mjs
  */
 
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -185,6 +185,73 @@ test('graph-inject traceability is silent when no requirements exist', () => {
     const { code, stdout } = runHook('/arckit:traceability 001', projectsDir);
     assert.equal(code, 0);
     assert.equal(stdout, '', 'should exit silently when no REQs found');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('graph-inject responds to /arckit:health and writes docs/health.json', () => {
+  // Build a fixture that triggers FORGOTTEN-ADR (Proposed > 30 days old)
+  const root = mkdtempSync(join(tmpdir(), 'arckit-health-'));
+  const projectsDir = join(root, 'projects');
+  const projectDir = join(projectsDir, '001-fixture');
+  mkdirSync(join(projectDir, 'decisions'), { recursive: true });
+
+  writeFileSync(
+    join(projectDir, 'ARC-001-REQ-v1.0.md'),
+    `# REQ — ARC-001-REQ-v1.0
+
+| Field | Value |
+|---|---|
+| **Document ID** | ARC-001-REQ-v1.0 |
+| **Document Type** | REQ |
+| **Status** | DRAFT |
+| **Created Date** | 2025-01-01 |
+| **Last Modified** | 2025-01-15 |
+
+### BR-001: Test requirement
+`
+  );
+
+  // ADR with Status=Proposed and an old created date → triggers FORGOTTEN-ADR
+  const proposedAdrPath = join(projectDir, 'decisions', 'ARC-001-ADR-001-v1.0.md');
+  writeFileSync(
+    proposedAdrPath,
+    `# ADR — ARC-001-ADR-001-v1.0
+
+| Field | Value |
+|---|---|
+| **Document ID** | ARC-001-ADR-001-v1.0 |
+| **Document Type** | ADR |
+| **Status** | Proposed |
+| **Created Date** | 2025-01-01 |
+| **Last Modified** | 2025-01-01 |
+
+## Status
+
+Proposed
+
+References BR-001.
+`
+  );
+
+  try {
+    const { code, stdout, stderr } = runHook('/arckit:health 001', root);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+
+    assert.ok(ctx.includes('Health Pre-processor Complete'));
+    assert.ok(ctx.includes('Per-Project Findings'));
+    assert.ok(ctx.includes('FORGOTTEN-ADR'), 'should emit a FORGOTTEN-ADR finding');
+    assert.ok(ctx.includes('PROJECT: 001-fixture'));
+
+    // docs/health.json side-effect
+    const healthJson = join(root, 'docs', 'health.json');
+    assert.ok(existsSync(healthJson), 'docs/health.json should be written');
+    const parsed = JSON.parse(readFileSync(healthJson, 'utf8'));
+    assert.equal(parsed.scanned.projects, 1);
+    assert.ok(parsed.byType['FORGOTTEN-ADR'] >= 1);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
