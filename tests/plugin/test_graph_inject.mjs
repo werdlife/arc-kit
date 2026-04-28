@@ -257,6 +257,98 @@ References BR-001.
   }
 });
 
+test('graph-inject responds to /arckit:analyze', () => {
+  // Build a richer fixture that has everything analyze cares about:
+  // global PRIN, vendor with reviews, RISK doc, REQ.
+  const root = mkdtempSync(join(tmpdir(), 'arckit-analyze-'));
+  const projectsDir = join(root, 'projects');
+  const projectDir = join(projectsDir, '001-fixture');
+  mkdirSync(join(projectDir, 'vendors', 'acme', 'reviews'), { recursive: true });
+  mkdirSync(join(projectsDir, '000-global'), { recursive: true });
+
+  const docCtl = (id, type, fields = {}) => `# ${type} — ${id}
+
+| Field | Value |
+|---|---|
+| **Document ID** | ${id} |
+| **Document Type** | ${type} |
+| **Status** | ${fields.Status || 'DRAFT'} |
+| **Version** | 1.0 |
+| **Owner** | ${fields.Owner || 'EA Team'} |
+| **Classification** | ${fields.Classification || 'OFFICIAL'} |
+
+## Body
+`;
+
+  writeFileSync(
+    join(projectDir, 'ARC-001-REQ-v1.0.md'),
+    docCtl('ARC-001-REQ-v1.0', 'REQ') +
+      `### BR-001: Test requirement\n\n| Priority | MUST |\n`
+  );
+  writeFileSync(
+    join(projectDir, 'ARC-001-RISK-v1.0.md'),
+    docCtl('ARC-001-RISK-v1.0', 'RISK') +
+      `### Risk R-001: Vendor lock-in\n\n` +
+      `**Category**: Strategic\n\n` +
+      `**Inherent**: High\n\n` +
+      `**Residual**: Medium\n\n` +
+      `**Owner**: EA Team\n\n` +
+      `**Status**: Open\n\n` +
+      `**Response**: Mitigate\n`
+  );
+  writeFileSync(
+    join(projectDir, 'vendors', 'acme', 'ARC-001-HLD-v1.0.md'),
+    docCtl('ARC-001-HLD-v1.0', 'HLD')
+  );
+  writeFileSync(
+    join(projectDir, 'vendors', 'acme', 'reviews', 'ARC-001-HLDR-001-v1.0.md'),
+    docCtl('ARC-001-HLDR-001-v1.0', 'HLDR') + 'Verdict: APPROVED\n'
+  );
+  writeFileSync(
+    join(projectsDir, '000-global', 'ARC-000-PRIN-v1.0.md'),
+    docCtl('ARC-000-PRIN-v1.0', 'PRIN') +
+      `## 1. Security Principles\n\n### 1. Least privilege\n\n**Principle Statement**: only grant minimum access.\n`
+  );
+
+  try {
+    const { code, stdout, stderr } = runHook('/arckit:analyze 001', projectsDir);
+    assert.equal(code, 0, `exit 0, stderr: ${stderr}`);
+    const out = JSON.parse(stdout);
+    const ctx = out.hookSpecificOutput.additionalContext;
+
+    assert.ok(ctx.includes('Governance Scan Pre-processor Complete'));
+    assert.ok(ctx.includes('### Scan Parameters'));
+    assert.ok(ctx.includes('### Artifact Inventory'));
+    assert.ok(ctx.includes('### Compliance Artifact Presence'));
+    assert.ok(ctx.includes('### Requirements Inventory'));
+    assert.ok(ctx.includes('BR-001'));
+    assert.ok(ctx.includes('### Principles'));
+    assert.ok(ctx.includes('Least privilege'));
+    assert.ok(ctx.includes('### Risks'));
+    assert.ok(ctx.includes('### Vendor Inventory'));
+    assert.ok(ctx.includes('acme'));
+    assert.ok(ctx.includes('Rule 1 — Hook tables are primary data'));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('graph-inject analyze is silent on ambiguous project', () => {
+  const { root, projectsDir } = makeFixture();
+  try {
+    mkdirSync(join(projectsDir, '002-second'), { recursive: true });
+    writeFileSync(
+      join(projectsDir, '002-second', 'ARC-002-REQ-v1.0.md'),
+      `# REQ\n\n| Field | Value |\n|---|---|\n| **Document ID** | ARC-002-REQ-v1.0 |\n`
+    );
+    const { code, stdout } = runHook('/arckit:analyze', projectsDir);
+    assert.equal(code, 0);
+    assert.equal(stdout, '', 'should exit silently when ambiguous');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('graph-inject is silent when projects/ dir does not exist', () => {
   const root = mkdtempSync(join(tmpdir(), 'arckit-empty-'));
   try {
