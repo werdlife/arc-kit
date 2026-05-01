@@ -76,6 +76,12 @@ export function extractVersion(filename) {
 // ── Metadata Extraction ──
 
 const DOC_CONTROL_RE = /^\|\s*\*\*([^*]+)\*\*\s*\|\s*(.+?)\s*\|/;
+// Strict 3-digit form for the universal scanner — it runs on every artifact
+// (graph-utils.mjs:166), so loosening it would pollute non-REQ docs that use
+// the same prefix in a different namespace (e.g. Azure Security Benchmark
+// "Backup & Recovery (BR)" → BR-1, BR-2, BR-3 in azure-research-template.md).
+// 1-2 digit REQ IDs are still recovered from REQ-doc headings via
+// `extractRequirementDetails` below.
 const REQ_ID_PATTERN = /\b(BR-\d{3}|FR-\d{3}|NFR-[A-Z]+-\d{3}|NFR-\d{3}|INT-\d{3}|DR-\d{3})\b/g;
 
 export function extractDocControlFields(content) {
@@ -121,7 +127,7 @@ export function extractRequirementDetails(content) {
 
   // Pattern for requirement headings: ### or #### BR-001: Description text
   // Template uses ### for BR, #### for FR/NFR/INT/DR — match both levels
-  const headingRe = /^#{3,4}\s+((?:BR|FR|NFR(?:-[A-Z]+)?|INT|DR)-\d{3}):\s*(.+)/;
+  const headingRe = /^#{3,4}\s+((?:BR|FR|NFR(?:-[A-Z]+)?|INT|DR)-\d{1,3}):\s*(.+)/;
   // Priority patterns in table rows or inline markers
   const priorityRe = /\b(MUST|SHOULD|MAY)\b/;
 
