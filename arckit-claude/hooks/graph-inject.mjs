@@ -128,6 +128,11 @@ const RECIPES = [
         excludeGlobal: true,
         withRequirements: true,
         withVendors: true,
+        // formatTraceability reads node.reqIds for every non-REQ artifact to
+        // build refMap. Without withNodeMetadata, reqIds is never assigned
+        // (graph-utils.mjs:181-188), so refMap stays empty and coverage
+        // reports 0% even when sibling artifacts genuinely cite requirements.
+        withNodeMetadata: true,
         ...(arg ? { projectFilter: arg } : {}),
       };
     },
