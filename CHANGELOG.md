@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.12.3] - 2026-05-01
+
 ### Fixed
 
 - **`/arckit:traceability` actually now reports correct coverage (#389).** Previous v4.12.2 attempt fixed regex namespace collisions but the actual bug was elsewhere: `formatTraceability` reads `node.reqIds` for every non-REQ artifact to build the coverage `refMap`, but `node.reqIds` is only assigned by `scanAllArtifacts` when the caller passes `withNodeMetadata: true`. The traceability recipe did not request that flag, so `reqIds` was always `undefined` and `refMap` always empty. Verified end-to-end against the issue's reproduction repo: coverage now reports 41 of 53 requirements (77%) with proper citation lists per requirement.
