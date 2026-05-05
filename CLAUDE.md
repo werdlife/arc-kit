@@ -507,15 +507,16 @@ git checkout main && git pull
 ./scripts/bump-version.sh X.Y.Z
 # 5. Regenerate Codex/OpenCode/Gemini formats
 python scripts/converter.py
-# 6. Validate plugin/marketplace version agreement (Claude Code v2.1.118+)
-claude plugin tag arckit-claude --dry-run
-# 7. (optional) Prune orphaned plugin dependencies
-claude plugin prune --dry-run
-# 8. Commit, tag, push — GitHub Release created automatically
+# 6. Commit the bump (claude plugin tag below requires a clean tree)
 git add -A && git commit -m "chore: bump version to X.Y.Z"
+# 7. Validate plugin/marketplace version agreement (Claude Code v2.1.118+)
+claude plugin tag arckit-claude --dry-run
+# 8. (optional) Prune orphaned plugin dependencies
+claude plugin prune --dry-run
+# 9. Tag, push — GitHub Release created automatically
 git tag -a vX.Y.Z -m "vX.Y.Z"
 git push && git push --tags
-# 9. Push to extension repos (Gemini, Codex, etc.)
+# 10. Push to extension repos (Gemini, Codex, etc.)
 ./scripts/push-extensions.sh
 ```
 

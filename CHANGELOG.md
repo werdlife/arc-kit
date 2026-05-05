@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.14.0] - 2026-05-05
+
+Adopts Claude Code v2.1.117–v2.1.128 high-value capabilities (#427). Plugin minimum bumped to **v2.1.121**; plugin auto-update applies the new floor on next `claude plugin update`.
+
+### Added
+
+- **MCP `alwaysLoad` on `aws-knowledge` and `microsoft-learn` (#428, v2.1.121+).** Skips tool-search deferral so research commands see the MCP tools on turn 1 of `/arckit:aws-research` and `/arckit:azure-research`. Removes a discovery round-trip per session.
+- **PostToolUse `hookSpecificOutput.updatedToolOutput` on `provenance-stamp.mjs` and `update-manifest.mjs` (#429, v2.1.121+).** The model now sees a one-line summary of what each silent file-mutating hook did — effort requested vs. effective (with downgrade reason if any), manifest sync confirmation. Closes a long-standing visibility gap; the auditable downgrade signal that issue #407 was filed for is now in-band, not just stamped on disk.
+- **Session telemetry — `telemetry.mjs` hook + session-learner aggregation (#430, v2.1.84 / v2.1.119+).** Captures `duration_ms` for every tool call, `mcp__govreposcrape__*` calls (server, tool, sanitised args), and `TaskCreated` agent spawns. Aggregated into a one-line `**Telemetry:**` summary on every `sessions.md` entry — p50/p95 latency, top-3 agents, MCP call counts.
+- **Dashboard surface for telemetry (#431).** Two new panels on the Architecture Governance Dashboard — *Session Telemetry* (aggregate KPIs across last 10 sessions) and *Recent Sessions* (last 5 with detail). Fed by `docs/telemetry.json` written by `session-learner.mjs` when `docs/` exists.
+- **Community-recipes call article (#425).** "Wanted: Community Recipes" published at `docs/articles/` with hero PNG.
+
+### Changed
+
+- **Documented Claude Code minimum bumped from v2.1.117 to v2.1.121 (#430).** `version-check.mjs` SessionStart hook updated; warning copy lists the four new feature dependencies (`alwaysLoad`, `updatedToolOutput`, `duration_ms`, `claude plugin tag`).
+- **Release flow uses `claude plugin tag --dry-run` (#428, v2.1.118+).** Validates plugin/marketplace version agreement before `git tag` runs — catches version drift across the 15 version files. `claude plugin prune --dry-run` also documented for orphaned-dependency cleanup.
+- **`scripts/converter.py` filters `alwaysLoad` from generated Codex `config.toml` (#428).** Claude-only MCP fields no longer leak into other extensions; introduces a `CLAUDE_ONLY_MCP_FIELDS` set for future Claude-only keys.
+- **Session housekeeping (#419).** Memory log cleanup, plugin enablement, and `.gitignore` refinement.
+
 ## [4.13.1] - 2026-05-03
 
 Same-day follow-up to v4.13.0. All additive enhancements to the build harness.

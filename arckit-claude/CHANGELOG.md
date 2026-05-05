@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.14.0] - 2026-05-05
+
+Plugin adopts Claude Code v2.1.117–v2.1.128 high-value capabilities (#427). **Minimum Claude Code version bumped from v2.1.117 to v2.1.121.** All additive — no command rename, no template breaking change.
+
+### Added
+
+- **MCP `alwaysLoad: true` on `aws-knowledge` and `microsoft-learn` in `.mcp.json` (#428, v2.1.121+).** Skips Claude Code's tool-search deferral so the AWS Knowledge / Microsoft Learn tools are loaded eagerly at session start. Research commands (`/arckit:aws-research`, `/arckit:azure-research`) no longer pay a discovery round-trip on the first turn. Other MCP servers (`google-developer-knowledge`, `datacommons-mcp`, `govreposcrape`) remain deferred since they're only used by specific commands.
+- **PostToolUse `hookSpecificOutput.updatedToolOutput` on `provenance-stamp.mjs` (#429, v2.1.121+).** The model now sees a one-line summary on every Write/Edit of an ARC artefact: `[ArcKit] provenance stamped (effort: requested=max, effective=max)` — and on Write also `[ArcKit] docs/manifest.json auto-updated`. When effort is silently downgraded (e.g. `max` requested on a Sonnet model), the message reads `effective=high (downgraded — model does not support that level)` — the auditable signal #407 was filed for, now in-band rather than only stamped on disk. Multi-hook ordering caveat documented in the file (`provenance-stamp` runs after `update-manifest` on Write and re-surfaces its signal).
+- **PostToolUse `hookSpecificOutput.updatedToolOutput` on `update-manifest.mjs` (#429).** Emits `[ArcKit] docs/manifest.json updated: ARC-NNN-TYPE-vN.N → project/slot` on successful manifest update. Overwritten by `provenance-stamp.mjs` on chained Writes; visible in isolation when only `update-manifest` matches (e.g. legacy paths).
+- **`emitUpdatedToolOutput()` helper in `hook-utils.mjs`.** Shared utility for writing the PostToolUse `hookSpecificOutput` JSON; documents the multi-hook last-wins ordering rule.
+- **Session telemetry hook `telemetry.mjs` (#430).** New multi-purpose hook registered for PostToolUse (`.*`) and TaskCreated (`.*`). Records three event kinds to `.arckit/memory/.telemetry.jsonl`:
+  - `hook_duration` — `{ tool, duration_ms }` for every tool call (Claude Code v2.1.119+); excludes `TaskCreate` and `mcp__govreposcrape__*` so the duration histogram isn't polluted by long-running async tools.
+  - `mcp_call` — `{ server, tool, args }` for `mcp__govreposcrape__*` calls. Args sanitised: long strings replaced with length markers (`<string len=N>`), arrays/nested objects flattened to `<array>`/`<object>`. No payload content stored.
+  - `agent_spawn` — `{ agent }` from `tool_input.subagent_type` on TaskCreated (Claude Code v2.1.84+).
+
+  Telemetry is best-effort — any failure (write error, malformed line, missing field) is swallowed silently.
+- **Session-learner telemetry aggregation (#430).** `session-learner.mjs` reads `.telemetry.jsonl` at Stop / StopFailure, computes overall p50/p95 over all latencies, top-3 agents, and MCP server counts, appends a one-line `**Telemetry:**` summary to the session entry in `sessions.md`, and deletes the JSONL so the next session starts clean. Sample output: `47 tool calls (p50=12ms, p95=4200ms) | 3 agents (arckit-research×2, arckit-datascout) | MCP: govreposcrape×8`.
+- **Dashboard surface — `docs/telemetry.json` + Session Telemetry / Recent Sessions panels (#431).** When `docs/` exists, `session-learner.mjs` also writes a structured rollup to `docs/telemetry.json` (newer-first, capped at 50 sessions). The pages dashboard fetches this with the same graceful-fallback pattern as `health.json` and renders two new panels under the Health row: *Session Telemetry* (aggregate tool calls, median p50, agents spawned, MCP calls across last 10 sessions) and *Recent Sessions* (last 5 with date, type, per-session counts and failure marker if applicable). Renders only when `sessions.length > 0`; projects without telemetry render the dashboard exactly as before.
+- **`claude plugin tag --dry-run` validation step in release flow (#428, v2.1.118+).** Cross-checks `arckit-claude/.claude-plugin/plugin.json` against the marketplace entry in `.claude-plugin/marketplace.json` and exits non-zero on mismatch. Documented in CLAUDE.md and `scripts/bump-version.sh` reminders. Used for validation only — `claude plugin tag` creates `arckit--vX.Y.Z` style tags which would not trigger `.github/workflows/release.yml` (matches `v[0-9]+.[0-9]+.[0-9]+`).
+- **`claude plugin prune --dry-run` cleanup step (#428, v2.1.121+).** Optional dependency cleanup; documented in release flow.
+
+### Changed
+
+- **Documented minimum Claude Code version bumped from v2.1.117 to v2.1.121 (#430).** `version-check.mjs` SessionStart hook updated (`MIN_CLAUDE_CODE_VERSION = '2.1.121'`); warning copy lists the four new feature dependencies introduced in this release. README, `docs/guides/mcp-servers.md`, and the top-level README updated; "Why v2.1.121?" paragraph rewritten to lead with what's actually new (`alwaysLoad`, `updatedToolOutput`, `claude plugin tag`, `duration_ms`) and carries forward the v2.1.117 / v2.1.111 / v2.1.97 context.
+- **`scripts/converter.py` filters `alwaysLoad` from generated Codex `config.toml` (#428).** The converter previously coerced all MCP server fields to quoted strings, which would have emitted `alwaysLoad = "True"`. New `CLAUDE_ONLY_MCP_FIELDS` set strips Claude-only keys before serialisation, leaving room for future additions.
+- **Session housekeeping (#419).** Memory log cleanup, plugin enablement, and `.gitignore` refinement.
+
+### Notes for plugin authors
+
+- **`type: "mcp_tool"` clarification (v2.1.118).** This Claude Code feature lets a hook *invoke* an MCP tool as its action (alternative to `type: "command"` / `type: "prompt"`). It does **not** filter hooks to fire only on MCP tool calls. ArcKit logs `govreposcrape` calls via the existing tool-name matcher pattern (`mcp__govreposcrape__.*`); no `type: "mcp_tool"` registration is needed for telemetry.
+- **`graph-inject.mjs` is `UserPromptSubmit`, not `PostToolUse`.** Originally listed in #427's `updatedToolOutput` checklist alongside the provenance and manifest hooks; doesn't apply because UserPromptSubmit hooks return context to the model via their own mechanism (`additionalContext`). Removed from scope in #429.
+
 ## [4.13.1] - 2026-05-03
 
 Same-day follow-up to v4.13.0. All changes are additive enhancements to the build harness — no breaking changes, no removals.

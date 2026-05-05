@@ -4,6 +4,20 @@ Enterprise Architecture Governance & Vendor Procurement Toolkit - a Claude Code 
 
 ## Installation
 
+### Step 0: Make sure Claude Code is up to date
+
+ArcKit v4.14.0 needs Claude Code **v2.1.121 or later** (see Prerequisites below). The simplest way to land on a supported version — even if you've never installed Claude Code before — is:
+
+```bash
+claude install latest
+```
+
+If you don't yet have the `claude` CLI on your PATH, follow the [official Claude Code install guide](https://docs.claude.com/en/docs/claude-code/quickstart) first, then run `claude install latest`. To check what you're on:
+
+```bash
+claude --version
+```
+
 ### Step 1: Add the marketplace
 
 In Claude Code, run:

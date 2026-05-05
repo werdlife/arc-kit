@@ -51,6 +51,14 @@ A comprehensive book-length guide to ArcKit — covering every subsystem (comman
 
 **Claude Code** (premier experience) — install the ArcKit plugin (requires **v2.1.121+**):
 
+First, make sure Claude Code is on the latest version:
+
+```bash
+claude install latest
+```
+
+Then in Claude Code:
+
 ```text
 /plugin marketplace add tractorjuice/arc-kit
 ```
@@ -100,7 +108,7 @@ uv tool install arckit-cli --from git+https://github.com/tractorjuice/arc-kit.gi
 uvx --from git+https://github.com/tractorjuice/arc-kit.git arckit init my-project
 ```
 
-**Latest Release**: [v4.13.1](https://github.com/tractorjuice/arc-kit/releases/tag/v4.13.1)
+**Latest Release**: [v4.14.0](https://github.com/tractorjuice/arc-kit/releases/tag/v4.14.0)
 
 ### Platform Support
 
@@ -1677,7 +1685,7 @@ arckit init .
 
 - **Issues**: [GitHub Issues](https://github.com/tractorjuice/arc-kit/issues)
 - **Releases**: [GitHub Releases](https://github.com/tractorjuice/arc-kit/releases)
-- **Latest Version**: [v4.13.1](https://github.com/tractorjuice/arc-kit/releases/tag/v4.13.1)
+- **Latest Version**: [v4.14.0](https://github.com/tractorjuice/arc-kit/releases/tag/v4.14.0)
 
 ---
 

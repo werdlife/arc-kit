@@ -13,6 +13,15 @@ This guide covers installing the ArcKit plugin, configuring MCP servers, and com
 - **Claude Code** v2.1.121 or later (or **Claude Cowork** desktop app)
 - **Bash** shell (for helper scripts)
 
+### Step 0: Make sure Claude Code is up to date
+
+```bash
+claude install latest
+claude --version
+```
+
+`claude install` accepts `stable`, `latest`, or a specific version (e.g. `claude install 2.1.121`). If you don't have the `claude` CLI yet, follow the [official Claude Code install guide](https://docs.claude.com/en/docs/claude-code/quickstart) first.
+
 ### Optional: Long-session prompt cache (Claude Code v2.1.108+)
 
 Long ArcKit workflows -- requirements -> data-model -> components -> stories, or any chain that re-reads the same templates, principles, and project artifacts -- benefit from the 1-hour prompt cache TTL introduced in Claude Code v2.1.108. The default 5-minute TTL expires between commands when you pause to review output, file the next prompt, or step away.
