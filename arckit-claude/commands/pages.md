@@ -313,6 +313,22 @@ Only include these known artifact types. Match by type code pattern `ARC-{PID}-{
 | | NPRA | `ARC-*-NPRA-*.md` | UAE National Priorities Alignment Statement |
 | **Procurement (Community-contributed — UAE Federal Overlay)** | | | |
 | | FPRO | `ARC-*-FPRO-*.md` | UAE Federal Procurement Strategy |
+| **Compliance (Community-contributed — Canada Federal Overlay)** | | | |
+| | FITAA | `ARC-*-FITAA-*.md` | Canada FITAA Compliance Assessment |
+| | PIA | `ARC-*-PIA-*.md` | Canada Privacy Impact Assessment |
+| | ATIP | `ARC-*-ATIP-*.md` | Canada ATIP Reconciliation |
+| | AIA | `ARC-*-AIA-*.md` | Canada Algorithmic Impact Assessment |
+| | SOIA | `ARC-*-SOIA-*.md` | Canada Security of Information Act Handling Plan |
+| | OLA | `ARC-*-OLA-*.md` | Canada Official Languages Act Review |
+| **Architecture (Community-contributed — Canada Federal Overlay)** | | | |
+| | ITSG | `ARC-*-ITSG-*.md` | Canada ITSG-33 Statement of Applicability |
+| | CACR | `ARC-*-CACR-*.md` | Canada Sovereign Cloud Residency Assessment |
+| **Governance (Community-contributed — Canada Federal Overlay)** | | | |
+| | CHRT | `ARC-*-CHRT-*.md` | Canada Charter Rights Design Review |
+| | DIGSTD | `ARC-*-DIGSTD-*.md` | Canada GC Digital Standards Conformance |
+| | OCAP | `ARC-*-OCAP-*.md` | Canada First Nations OCAP Sovereignty Assessment |
+| **Procurement (Community-contributed — Canada Federal Overlay)** | | | |
+| | PROC | `ARC-*-PROC-*.md` | Canada Federal Procurement Strategy |
 
 > **Single source of truth**: this table mirrors [`arckit-claude/config/doc-types.mjs`](../config/doc-types.mjs). When adding new commands, register the type code in `doc-types.mjs` first (so the hook resolves category + display name) and then add the row here so `/arckit.pages` includes the artifact in the dashboard.
 

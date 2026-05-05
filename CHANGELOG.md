@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.15.0] - 2026-05-05
+
+Ships the Canada Federal Overlay alongside the v4.14.0 platform-capability adoption from earlier the same day.
+
+### Added
+
+- **Canada Federal Overlay (community)** — 12 new `ca-*` commands covering FITAA, PIA, ATIP, AIA, Charter, ITSG-33, SOIA, GC sovereign cloud residency, GC Digital Standards, Official Languages Act, federal procurement (PSPC + PSAB), and First Nations OCAP®.
+- 12 new templates (`.arckit/templates/ca-*-template.md` plus plugin mirrors).
+- 12 new guides (`docs/guides/ca-*.md` plus plugin mirrors).
+- 12 new type codes registered in `arckit-claude/config/doc-types.mjs`: `FITAA`, `PIA`, `ATIP`, `AIA`, `CHRT`, `ITSG`, `SOIA`, `CACR`, `DIGSTD`, `OLA`, `PROC`, `OCAP`.
+- `ca-federal-fitaa` build recipe with execution chains and Mermaid flow diagrams.
+- Codex / OpenCode / Copilot / Paperclip extension formats regenerated.
+
+### Changed
+
+- Total command count: 104 → 116 (70 official + 46 community).
+
 ## [4.14.0] - 2026-05-05
 
 Adopts Claude Code v2.1.117–v2.1.128 high-value capabilities (#427). Plugin minimum bumped to **v2.1.121**; plugin auto-update applies the new floor on next `claude plugin update`.

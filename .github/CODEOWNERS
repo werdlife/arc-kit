@@ -23,6 +23,13 @@ arckit-claude/commands/at-*.md                 @gtonic @tractorjuice
 arckit-claude/templates/at-*-template.md       @gtonic @tractorjuice
 .arckit/templates/at-*-template.md             @gtonic @tractorjuice
 
+# Canada Federal Overlay — community-contributed, maintained by @tractorjuice (recruiting Canadian federal domain co-maintainer; promotion to official-baseline gated on co-maintainer commitment)
+arckit-claude/commands/ca-*.md                 @tractorjuice
+arckit-claude/templates/ca-*-template.md       @tractorjuice
+.arckit/templates/ca-*-template.md             @tractorjuice
+docs/guides/ca-*.md                            @tractorjuice
+arckit-claude/docs/guides/ca-*.md              @tractorjuice
+
 # UAE Federal Overlay — community-contributed, maintained by @tractorjuice (recruiting UAE domain co-maintainer; promotion to official-baseline gated on co-maintainer commitment)
 arckit-claude/commands/uae-*.md                @tractorjuice
 arckit-claude/templates/uae-*-template.md      @tractorjuice

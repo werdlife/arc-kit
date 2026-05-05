@@ -636,7 +636,143 @@ graph TD
 
 ---
 
-## 7. UAE Federal Workflow
+## 7. Canada Federal Workflow
+
+> ⚠️ **[COMMUNITY]** Canada Federal Overlay — community-contributed by @tractorjuice, recruiting Canadian federal domain co-maintainer. Output should be reviewed by qualified DOJ counsel, departmental Privacy Officer / ATIP coordinator, and security officer before reliance.
+
+The Canada Federal Overlay ships 12 `ca-*` commands covering FITAA (Bill C-70 2024), Privacy Act PIA, ATIP reconciliation, Algorithmic Impact Assessment, Charter rights, ITSG-33, SOIA classified handling, sovereign cloud residency, GC Digital Standards, Official Languages Act, PSPC procurement, and OCAP® Indigenous data sovereignty. Two canonical execution chains apply depending on whether the system engages FITAA.
+
+### 7a. FITAA-class application (full overlay)
+
+For systems that fall in scope of the Foreign Influence Transparency and Accountability Act — registration tooling, foreign-principal exposure, public-office-holder interactions — the canonical chain runs all 12 `ca-*` commands.
+
+```mermaid
+graph TD
+    %% Foundation
+    A[principles] --> B[requirements]
+    B --> C1[ca-charter]
+    B --> C2[ca-pia]
+
+    %% FITAA core path
+    C1 --> D[ca-fitaa]
+    C2 --> D
+    C2 --> E[ca-atip]
+    B --> F[ca-aia]
+    C2 --> F
+    D --> G[ca-ocap]
+    C2 --> G
+
+    %% Security stream
+    B --> H[ca-itsg-33]
+    C2 --> H
+    D --> I[ca-soia]
+    H --> I
+    H --> J[ca-cloud-residency]
+
+    %% Service-side compliance
+    D --> K[ca-ola]
+    B --> L[ca-gc-digital-standards]
+
+    %% Procurement and cross-cutting
+    H --> M[ca-pspc]
+    J --> M
+    M --> N[adr]
+    D --> N
+    H --> N
+    N --> O[sobc]
+    D --> P[risk]
+    C2 --> P
+    F --> P
+    C1 --> P
+    H --> P
+    O --> Q[framework]
+    P --> Q
+
+    style A fill:#90EE90
+    style B fill:#90EE90
+    style C1 fill:#FFD700
+    style C2 fill:#FFB347
+    style D fill:#FF6961
+    style E fill:#FFB347
+    style F fill:#FFD700
+    style G fill:#9370DB
+    style H fill:#87CEEB
+    style I fill:#87CEEB
+    style J fill:#87CEEB
+    style K fill:#FFA07A
+    style L fill:#FFA07A
+    style M fill:#FFA07A
+    style N fill:#90EE90
+    style O fill:#90EE90
+    style P fill:#90EE90
+    style Q fill:#90EE90
+```
+
+**Key:**
+
+- **Green boxes** = Foundation inputs and standard cross-cutting outputs
+- **Red box** = FITAA flagship (Bill C-70 2024 foreign-influence registration)
+- **Orange boxes** = Privacy stream (Privacy Act PIA, ATIP reconciliation)
+- **Gold boxes** = Charter rights and Algorithmic Impact Assessment
+- **Purple box** = OCAP® First Nations data sovereignty (only when Indigenous data in scope)
+- **Blue boxes** = Security stream (ITSG-33, SOIA, sovereign cloud residency)
+- **Salmon boxes** = Service-side compliance and procurement (OLA, GC Digital Standards, PSPC)
+
+### 7b. Generic federal Canadian application (no FITAA exposure)
+
+For federal Canadian digital services that do not engage FITAA, drop `ca-charter` (run only if rights-engaging), `ca-fitaa`, and `ca-soia` (run only if classified leads in scope).
+
+```mermaid
+graph TD
+    A[principles] --> B[requirements]
+    B --> C[ca-pia]
+    C --> D[ca-atip]
+    B --> E[ca-aia]
+    C --> E
+    C --> F[ca-ocap]
+
+    B --> G[ca-itsg-33]
+    C --> G
+    G --> H[ca-cloud-residency]
+
+    B --> I[ca-ola]
+    B --> J[ca-gc-digital-standards]
+
+    G --> K[ca-pspc]
+    H --> K
+    K --> L[adr]
+    G --> L
+    L --> M[sobc]
+    C --> N[risk]
+    E --> N
+    G --> N
+    M --> O[framework]
+    N --> O
+
+    style A fill:#90EE90
+    style B fill:#90EE90
+    style C fill:#FFB347
+    style D fill:#FFB347
+    style E fill:#FFD700
+    style F fill:#9370DB
+    style G fill:#87CEEB
+    style H fill:#87CEEB
+    style I fill:#FFA07A
+    style J fill:#FFA07A
+    style K fill:#FFA07A
+    style L fill:#90EE90
+    style M fill:#90EE90
+    style N fill:#90EE90
+    style O fill:#90EE90
+```
+
+**Prerequisites**: Set `governance_framework: Canada Federal` and `classification_scheme: GC Security Categorization` in plugin userConfig before running. Each command's full guide is in [`docs/guides/`](guides/) (`ca-fitaa.md`, `ca-pia.md`, etc.).
+
+**Duration**: 6-10 weeks for a full FITAA-class build (procurement and OLA streams run in parallel with security and privacy). 3-5 weeks for the generic federal path.
+
+---
+
+## 8. UAE Federal Workflow
 
 For UAE federal entities, contracted suppliers, and CII operators, the canonical chain runs the 12 `uae-*` commands in sequence between the standard inputs (requirements, data-model, risk) and the cross-cutting outputs (sobc, wardley, framework).
 
@@ -720,7 +856,7 @@ graph TD
 
 ---
 
-## 8. Government Code Discovery
+## 9. Government Code Discovery
 
 For UK Government projects, run these commands during Alpha/Beta to check for reusable code before building from scratch. Uses the govreposcrape MCP server (no API key required).
 

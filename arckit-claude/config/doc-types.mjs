@@ -139,6 +139,19 @@ export const DOC_TYPES = {
   'AICH':      { name: 'UAE AI Charter Compliance Assessment',         category: 'Compliance',  regime: 'UAE', severity: 'HIGH' },
   'AUTI':      { name: 'UAE AI Autonomy Tier Posture',                 category: 'Architecture', regime: 'UAE', severity: 'HIGH' },
   'FPRO':      { name: 'UAE Federal Procurement Strategy',             category: 'Procurement', regime: 'UAE' },
+  // Canada Federal Overlay (community)
+  'FITAA':     { name: 'Canada FITAA Compliance Assessment',           category: 'Compliance',   regime: 'CA' },
+  'PIA':       { name: 'Canada Privacy Impact Assessment',             category: 'Compliance',   regime: 'CA' },
+  'ATIP':      { name: 'Canada ATIP Reconciliation',                   category: 'Compliance',   regime: 'CA' },
+  'AIA':       { name: 'Canada Algorithmic Impact Assessment',         category: 'Compliance',   regime: 'CA' },
+  'CHRT':      { name: 'Canada Charter Rights Design Review',          category: 'Governance',   regime: 'CA' },
+  'ITSG':      { name: 'Canada ITSG-33 Statement of Applicability',    category: 'Architecture', regime: 'CA' },
+  'SOIA':      { name: 'Canada Security of Information Act Handling Plan', category: 'Compliance',   regime: 'CA' },
+  'CACR':      { name: 'Canada Sovereign Cloud Residency Assessment',  category: 'Architecture', regime: 'CA' },
+  'DIGSTD':    { name: 'Canada GC Digital Standards Conformance',      category: 'Governance',   regime: 'CA' },
+  'OLA':       { name: 'Canada Official Languages Act Review',         category: 'Compliance',   regime: 'CA' },
+  'PROC':      { name: 'Canada Federal Procurement Strategy',          category: 'Procurement',  regime: 'CA' },
+  'OCAP':      { name: 'Canada First Nations OCAP Sovereignty Assessment', category: 'Governance',   regime: 'CA' },
 };
 
 // Derived: regimes in canonical order (officially-maintained first, then community alphabetical)
