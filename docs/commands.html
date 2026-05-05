@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <script>(function(){var t=localStorage.getItem('arckit-theme');if(t==='dark')document.documentElement.classList.add('dark-mode');else if(t==='light')document.documentElement.classList.add('light-mode');else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark-mode')})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="ArcKit AI Command Reference - 70 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
+    <meta name="description" content="ArcKit AI Command Reference - 117 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
     <title>AI Command Reference - ArcKit</title>
     <meta name="keywords" content="ArcKit commands, enterprise architecture commands, governance toolkit, command reference, dependency matrix, AI architecture">
     <meta name="author" content="ArcKit">
     <meta property="og:title" content="Command Reference - ArcKit">
-    <meta property="og:description" content="70 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
+    <meta property="og:description" content="117 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arckit.org/commands.html">
     <meta property="og:site_name" content="ArcKit">
     <meta property="og:image" content="https://arckit.org/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Command Reference - ArcKit">
-    <meta name="twitter:description" content="70 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
+    <meta name="twitter:description" content="117 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.">
     <meta name="twitter:image" content="https://arckit.org/og-image.png">
     <link rel="canonical" href="https://arckit.org/commands.html">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -461,7 +461,7 @@
                 "@type": "WebPage",
                 "@id": "https://arckit.org/commands.html",
                 "name": "Command Reference - ArcKit",
-                "description": "70 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.",
+                "description": "117 AI commands for enterprise architecture governance, with sortable table, filters, and dependency matrix.",
                 "isPartOf": { "@type": "WebSite", "name": "ArcKit", "url": "https://arckit.org" }
             },
             {
@@ -506,7 +506,7 @@
 
     <div class="app-page-hero app-page-hero--commands">
         <div class="govuk-width-container app-page-hero__content">
-            <span class="app-page-hero__stat">70 AI Commands</span>
+            <span class="app-page-hero__stat">117 AI Commands</span>
             <h1 class="app-page-hero__title">AI Command Reference</h1>
             <p class="app-page-hero__description">Sortable table with filters and full dependency matrix &mdash; every ArcKit command at a glance.</p>
         </div>
@@ -567,18 +567,39 @@
                     <option value="reporting">Reporting</option>
                     <option value="utility">Utility</option>
                     <option value="ca-overlay">Canada Federal Overlay (Community)</option>
-                    <option value="uae-overlay">UAE Federal Overlay</option>
+                    <option value="uae-overlay">UAE Federal Overlay (Community)</option>
                     <option value="eu-overlay">EU Regulatory Overlay (Community)</option>
                     <option value="fr-overlay">French Government Overlay (Community)</option>
                     <option value="at-overlay">Austrian Government Overlay (Community)</option>
                 </select>
             </div>
             <div>
+                <label for="jurisdiction-filter">Jurisdiction:</label>
+                <select id="jurisdiction-filter">
+                    <option value="all">All jurisdictions</option>
+                    <option value="generic">Generic</option>
+                    <option value="uk">UK</option>
+                    <option value="eu">EU</option>
+                    <option value="france">France</option>
+                    <option value="austria">Austria</option>
+                    <option value="canada">Canada</option>
+                    <option value="uae">UAE</option>
+                </select>
+            </div>
+            <div>
+                <label for="tier-filter">Tier:</label>
+                <select id="tier-filter">
+                    <option value="all">All tiers</option>
+                    <option value="core">Core</option>
+                    <option value="community">Community</option>
+                </select>
+            </div>
+            <div>
                 <label for="search-filter">Search:</label>
-                <input type="text" id="search-filter" placeholder="Search commands...">
+                <input type="text" id="search-filter" placeholder="Search commands, descriptions, jurisdiction…">
             </div>
             <div class="app-command-count">
-                Showing <span id="visible-count">70</span> of 70 commands
+                Showing <span id="visible-count">117</span> of 117 commands
             </div>
         </div>
 
@@ -590,30 +611,38 @@
                         <th data-sort="asc" data-sort-col="0">Command <span class="sort-indicator">↕</span></th>
                         <th data-sort-col="1">Description <span class="sort-indicator">↕</span></th>
                         <th data-sort-col="2">Category <span class="sort-indicator">↕</span></th>
+                        <th data-sort-col="3">Jurisdiction <span class="sort-indicator">↕</span></th>
+                        <th data-sort-col="4">Tier <span class="sort-indicator">↕</span></th>
                         <th>Examples</th>
-                        <th data-sort-col="4">Status <span class="sort-indicator">↕</span></th>
+                        <th data-sort-col="6">Status <span class="sort-indicator">↕</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Foundation -->
-                    <tr data-status="live" data-category="foundation">
+                    <tr data-status="live" data-category="foundation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.start</code></td>
                         <td class="description">Get oriented with ArcKit — check project status, explore available commands, and choose your next step</td>
                         <td>Foundation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="foundation">
+                    <tr data-status="live" data-category="foundation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit:build</code></td>
                         <td class="description">Bulk-build the whole architecture in parallel waves via subagent isolation, driven by a YAML recipe (uk-saas / uk-mod-sovereign / uae-federal-ai). One git commit per wave, resumable via state.json. <strong>Claude Code only</strong> (depends on parallel Agent dispatch). New in v4.13.0.</td>
                         <td>Foundation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="foundation">
+                    <tr data-status="live" data-category="foundation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.plan</code></td>
                         <td class="description">Create project plan with timeline, phases, gates, and Mermaid diagrams</td>
                         <td>Foundation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-PLAN-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-PLAN-v1.0.md" title="App Packaging">v3/002</a>
@@ -629,10 +658,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="foundation">
+                    <tr data-status="live" data-category="foundation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.principles</code></td>
                         <td class="description">Create or update enterprise architecture principles</td>
                         <td>Foundation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/000-global/ARC-000-PRIN-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/000-global/ARC-000-PRIN-v1.0.md" title="HMRC">v2</a>
@@ -653,10 +684,12 @@
                     </tr>
 
                     <!-- Strategic Context -->
-                    <tr data-status="live" data-category="strategic-context">
+                    <tr data-status="live" data-category="strategic-context" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.stakeholders</code></td>
                         <td class="description">Analyze stakeholder drivers, goals, and measurable outcomes</td>
                         <td>Strategic Context</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/ARC-001-STKE-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-STKE-v1.0.md" title="HMRC">v2</a>
@@ -682,10 +715,12 @@
                     </tr>
 
                     <!-- Risk & Justification -->
-                    <tr data-status="live" data-category="risk-justification">
+                    <tr data-status="live" data-category="risk-justification" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.risk</code></td>
                         <td class="description">Create comprehensive risk register following HM Treasury Orange Book principles</td>
                         <td>Risk &amp; Justification</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-RISK-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-RISK-v1.0.md" title="App Packaging">v3/002</a>
@@ -704,10 +739,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="risk-justification">
+                    <tr data-status="live" data-category="risk-justification" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.sobc</code></td>
                         <td class="description">Create Strategic Outline Business Case (SOBC) using UK Government Green Book 5-case model</td>
                         <td>Risk &amp; Justification</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-SOBC-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-SOBC-v1.0.md" title="App Packaging">v3/002</a>
@@ -722,10 +759,12 @@
                     </tr>
 
                     <!-- Requirements -->
-                    <tr data-status="live" data-category="requirements">
+                    <tr data-status="live" data-category="requirements" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.requirements</code></td>
                         <td class="description">Create comprehensive business and technical requirements</td>
                         <td>Requirements</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/ARC-001-REQ-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-REQ-v1.0.md" title="HMRC">v2</a>
@@ -752,52 +791,64 @@
                     </tr>
 
                     <!-- Strategic Planning -->
-                    <tr data-status="experimental" data-category="strategic-planning">
+                    <tr data-status="experimental" data-category="strategic-planning" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.platform-design</code></td>
                         <td class="description">Create platform strategy using Platform Design Toolkit (8 canvases for multi-sided ecosystems)</td>
                         <td>Strategic Planning</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v8-ons-data-platform/#projects/001-ons-data-platform-modernisation/ARC-001-GAAP-v1.0.md" title="ONS Data">v8</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v10-training-marketplace/#projects/001-ai-training-marketplace/ARC-001-PLAT-v1.0.md" title="Training">v10</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="strategic-planning">
+                    <tr data-status="beta" data-category="strategic-planning" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.roadmap</code></td>
                         <td class="description">Create strategic architecture roadmap with multi-year timeline, capability evolution, and governance</td>
                         <td>Strategic Planning</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-ROAD-v1.0.md" title="Windows 11">v3</a>
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="strategic-planning">
+                    <tr data-status="beta" data-category="strategic-planning" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.strategy</code></td>
                         <td class="description">Synthesise strategic artifacts into executive-level Architecture Strategy document</td>
                         <td>Strategic Planning</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="strategic-planning">
+                    <tr data-status="beta" data-category="strategic-planning" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.framework</code></td>
                         <td class="description">Transform architecture artifacts into a structured, reusable framework with principles, patterns, and implementation guidance</td>
                         <td>Strategic Planning</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="strategic-planning">
+                    <tr data-status="beta" data-category="strategic-planning" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.glossary</code></td>
                         <td class="description">Generate comprehensive project glossary with terms, definitions, acronyms, and cross-references</td>
                         <td>Strategic Planning</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
 
                     <!-- Detailed Design -->
-                    <tr data-status="live" data-category="detailed-design">
+                    <tr data-status="live" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.data-model</code></td>
                         <td class="description">Create comprehensive data model with entity relationships, GDPR compliance, and data governance</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-DATA-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-DATA-v1.0.md" title="App Packaging">v3/002</a>
@@ -812,17 +863,21 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="alpha" data-category="detailed-design">
+                    <tr data-status="alpha" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.data-mesh-contract</code></td>
                         <td class="description">Create federated data product contracts for mesh architectures with SLAs, governance, and interoperability guarantees</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-alpha">Alpha</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="detailed-design">
+                    <tr data-status="beta" data-category="detailed-design" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.dpia</code></td>
                         <td class="description">Generate <a href="https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/data-protection-impact-assessments-dpias/" class="govuk-link">Data Protection Impact Assessment (DPIA)</a> for UK GDPR Article 35 compliance</td>
                         <td>Detailed Design</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-DPIA-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v8-ons-data-platform/#projects/001-ons-data-platform-modernisation/ARC-001-DPIA-v1.0.md" title="ONS Data">v8</a>
@@ -834,10 +889,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="detailed-design">
+                    <tr data-status="beta" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.research</code></td>
                         <td class="description">Research technology, services, and products to meet requirements with build vs buy analysis</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-RSCH-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-RSCH-v1.0.md" title="App Packaging">v3/002</a>
@@ -847,10 +904,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.azure-research</code></td>
                         <td class="description">Research Azure services and architecture patterns using Microsoft Learn MCP for authoritative guidance</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/research/ARC-001-AZRS-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/research/ARC-002-AZRS-v1.0.md" title="App Packaging">v3/002</a>
@@ -861,10 +920,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.aws-research</code></td>
                         <td class="description">Research AWS services and architecture patterns using AWS Knowledge MCP for authoritative guidance</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/research/ARC-001-AWRS-v1.0.md" title="SCTS">v14</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v17-fuel-prices/#projects/001-uk-fuel-price-transparency-service/research/ARC-001-AWRS-v1.0.md" title="Fuel Prices">v17</a>
@@ -873,38 +934,48 @@
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.gcp-research</code></td>
                         <td class="description">Research Google Cloud services and architecture patterns using <a href="https://developerknowledge.googleapis.com/mcp">Google Developer Knowledge MCP</a></td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.gov-reuse</code></td>
                         <td class="description">Discover reusable UK government code before building from scratch using <a href="https://github.com/chrisns/govreposcrape">govreposcrape</a></td>
                         <td>Detailed Design</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.gov-code-search</code></td>
                         <td class="description">Search 24,500+ UK government repositories using natural language queries via <a href="https://github.com/chrisns/govreposcrape">govreposcrape</a></td>
                         <td>Detailed Design</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.gov-landscape</code></td>
                         <td class="description">Map the UK government code landscape for a domain — who built what, common patterns, standards, maturity via <a href="https://github.com/chrisns/govreposcrape">govreposcrape</a></td>
                         <td>Detailed Design</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.datascout</code></td>
                         <td class="description">Discover external data sources (APIs, datasets, open data portals) to fulfil project requirements</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v17-fuel-prices/#projects/001-uk-fuel-price-transparency-service/ARC-001-DSCT-v1.0.md" title="Fuel Prices">v17</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v18-smart-meter/#projects/001-smart-meter-app/ARC-001-DSCT-v1.0.md" title="Smart Meter">v18</a>
@@ -912,24 +983,30 @@
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.grants</code></td>
                         <td class="description">Research UK government grants, charitable funding, and accelerator programmes with eligibility scoring</td>
                         <td>Detailed Design</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="detailed-design">
+                    <tr data-status="beta" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.dfd</code></td>
                         <td class="description">Generate Data Flow Diagrams (DFD) showing how data moves through system components, trust boundaries, and external entities</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.wardley</code></td>
                         <td class="description">Create strategic Wardley Maps for architecture decisions and build vs buy analysis</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/wardley-maps/ARC-001-WARD-001-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v6-patent-system/#projects/001-patent-management-system-for-the-intellectual-property-office/wardley-maps/ARC-001-WARD-001-v1.0.md" title="Patent">v6</a>
@@ -938,38 +1015,48 @@
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.wardley.value-chain</code></td>
                         <td class="description">Decompose user needs into value chain components with evolution positioning and movement analysis</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.wardley.doctrine</code></td>
                         <td class="description">Assess organisational doctrine maturity across 40+ universally useful principles</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.wardley.climate</code></td>
                         <td class="description">Analyze climatic patterns affecting your landscape — identify forces shaping evolution and competition</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="detailed-design">
+                    <tr data-status="experimental" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.wardley.gameplay</code></td>
                         <td class="description">Analyze strategic plays from 60+ gameplay patterns with position-aware scoring and D&amp;D alignment</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="live" data-category="detailed-design">
+                    <tr data-status="live" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.diagram</code></td>
                         <td class="description">Generate architecture diagrams using Mermaid for visual documentation</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/diagrams/ARC-001-DIAG-001-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/diagrams/ARC-001-DIAG-001-v1.0.md" title="Windows 11 Migration">v3/001</a>
@@ -982,10 +1069,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="detailed-design">
+                    <tr data-status="beta" data-category="detailed-design" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.adr</code></td>
                         <td class="description">Document architectural decisions with options analysis and traceability</td>
                         <td>Detailed Design</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/decisions/ARC-001-ADR-001-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/decisions/ARC-002-ADR-001-v1.0.md" title="App Packaging">v3/002</a>
@@ -999,10 +1088,12 @@
                     </tr>
 
                     <!-- Procurement -->
-                    <tr data-status="live" data-category="procurement">
+                    <tr data-status="live" data-category="procurement" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.sow</code></td>
                         <td class="description">Generate Statement of Work (SOW) / RFP document for vendor procurement</td>
                         <td>Procurement</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/ARC-001-SOW-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-SOW-v1.0.md" title="HMRC">v2</a>
@@ -1013,34 +1104,42 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="procurement">
+                    <tr data-status="experimental" data-category="procurement" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.dos</code></td>
                         <td class="description">Generate Digital Outcomes and Specialists (DOS) procurement documentation for UK Digital Marketplace</td>
                         <td>Procurement</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="procurement">
+                    <tr data-status="experimental" data-category="procurement" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.gcloud-search</code></td>
                         <td class="description">Find G-Cloud services on UK Digital Marketplace with live search and comparison</td>
                         <td>Procurement</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-GCLD-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-GCLD-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="procurement">
+                    <tr data-status="experimental" data-category="procurement" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.gcloud-clarify</code></td>
                         <td class="description">Analyze G-Cloud service gaps and generate supplier clarification questions</td>
                         <td>Procurement</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="live" data-category="procurement">
+                    <tr data-status="live" data-category="procurement" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.evaluate</code></td>
                         <td class="description">Create vendor evaluation framework and score vendor proposals</td>
                         <td>Procurement</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/ARC-001-EVAL-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-EVAL-v1.0.md" title="HMRC">v2</a>
@@ -1052,38 +1151,46 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="procurement">
+                    <tr data-status="beta" data-category="procurement" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.score</code></td>
                         <td class="description">Score vendor proposals with structured storage, side-by-side comparison, sensitivity analysis, and audit trail</td>
                         <td>Procurement</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
 
                     <!-- Design Reviews -->
-                    <tr data-status="beta" data-category="design-reviews">
+                    <tr data-status="beta" data-category="design-reviews" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.hld-review</code></td>
                         <td class="description">Review High-Level Design (HLD) against architecture principles and requirements</td>
                         <td>Design Reviews</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/reviews/ARC-001-HLD-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/reviews/ARC-001-HLD-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="design-reviews">
+                    <tr data-status="beta" data-category="design-reviews" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.dld-review</code></td>
                         <td class="description">Review Detailed Design (DLD) for implementation readiness</td>
                         <td>Design Reviews</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
 
                     <!-- Implementation -->
-                    <tr data-status="beta" data-category="implementation">
+                    <tr data-status="beta" data-category="implementation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.backlog</code></td>
                         <td class="description">Generate prioritised product backlog from ArcKit artifacts - convert requirements to user stories, organise into sprints</td>
                         <td>Implementation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-BKLG-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/002-application-packaging-rationalisation/ARC-002-BKLG-v1.0.md" title="App Packaging">v3/002</a>
@@ -1096,64 +1203,78 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="implementation">
+                    <tr data-status="experimental" data-category="implementation" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.trello</code></td>
                         <td class="description">Export product backlog to Trello - create board, lists, cards with labels and checklists from backlog JSON</td>
                         <td>Implementation</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- Operations -->
-                    <tr data-status="beta" data-category="operations">
+                    <tr data-status="beta" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.servicenow</code></td>
                         <td class="description">Create comprehensive ServiceNow service design with CMDB, SLAs, incident management, and change control</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-SNOW-v1.0.md" title="Windows 11">v3</a>
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="operations">
+                    <tr data-status="experimental" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.devops</code></td>
                         <td class="description">Create DevOps strategy with CI/CD pipelines, IaC, container orchestration, and developer experience</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-DEVOPS-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="operations">
+                    <tr data-status="experimental" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.mlops</code></td>
                         <td class="description">Create MLOps strategy with model lifecycle, training pipelines, serving, monitoring, and governance</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-MLOPS-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="operations">
+                    <tr data-status="experimental" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.finops</code></td>
                         <td class="description">Create FinOps strategy with cloud cost management, optimization, governance, and forecasting</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-FINOPS-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="operations">
+                    <tr data-status="experimental" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.operationalize</code></td>
                         <td class="description">Create operational readiness pack with support model, runbooks, DR/BCP, on-call, and handover documentation</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-OPS-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="live" data-category="operations">
+                    <tr data-status="live" data-category="operations" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.traceability</code></td>
                         <td class="description">Generate requirements traceability matrix from requirements to design to tests</td>
                         <td>Operations</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/#projects/001-exchange-online-migration/ARC-001-TRAC-v1.0.md" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-TRAC-v1.0.md" title="HMRC">v2</a>
@@ -1168,10 +1289,12 @@
                     </tr>
 
                     <!-- Quality & Compliance -->
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.analyze</code></td>
                         <td class="description">Perform comprehensive governance quality analysis across architecture artifacts (requirements, principles, designs, assessments)</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v6-patent-system/#projects/001-patent-management-system-for-the-intellectual-property-office/ARC-001-ANAL-v1.0.md" title="Patent">v6</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v9-cabinet-office-genai/#projects/001-cabinet-office-genai/ARC-001-ANAL-v1.0.md" title="Cabinet Office">v9</a>
@@ -1180,44 +1303,54 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="live" data-category="quality-compliance">
+                    <tr data-status="live" data-category="quality-compliance" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.principles-compliance</code></td>
                         <td class="description">Assess compliance with architecture principles and generate scorecard with evidence, gaps, and recommendations</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-PRIN-COMP-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-PRIN-COMP-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.conformance</code></td>
                         <td class="description">Systematic architecture conformance assessment — validates ADR decisions against designs, checks architecture drift, tracks technical debt, and enforces custom constraint rules</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.maturity-model</code></td>
                         <td class="description">Generate capability maturity model with current-state assessment, target-state definition, and improvement roadmap</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.service-assessment</code></td>
                         <td class="description">Prepare for <a href="https://www.gov.uk/service-manual/service-assessments" class="govuk-link">GDS Service Standard</a> assessment - analyze evidence against 14 points, identify gaps, generate readiness report</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v16-doctors-appointment/#projects/001-doctors-appointment/ARC-001-SASS-v1.0.md" title="Doctors">v16</a>
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.tcop</code></td>
                         <td class="description">Generate a <a href="https://www.gov.uk/guidance/the-technology-code-of-practice" class="govuk-link">Technology Code of Practice (TCoP)</a> review document for a UK Government technology project</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v6-patent-system/#projects/001-patent-management-system-for-the-intellectual-property-office/ARC-001-TCOP-v1.0.md" title="Patent">v6</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v8-ons-data-platform/#projects/001-ons-data-platform-modernisation/ARC-001-TCOP-v1.0.md" title="ONS Data">v8</a>
@@ -1227,20 +1360,24 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="alpha" data-category="quality-compliance">
+                    <tr data-status="alpha" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.ai-playbook</code></td>
                         <td class="description">Assess <a href="https://www.gov.uk/government/publications/ai-playbook-for-the-uk-government" class="govuk-link">UK Government AI Playbook</a> compliance for responsible AI deployment</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v9-cabinet-office-genai/#projects/001-cabinet-office-genai/ARC-001-AIPB-v1.0.md" title="Cabinet Office">v9</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v14-scottish-courts/#projects/001-scts-genai-programme/ARC-001-AIPB-v1.0.md" title="SCTS">v14</a>
                         </td>
                         <td><span class="app-status-tag app-status-alpha">Alpha</span></td>
                     </tr>
-                    <tr data-status="alpha" data-category="quality-compliance">
+                    <tr data-status="alpha" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.atrs</code></td>
                         <td class="description">Generate <a href="https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub" class="govuk-link">Algorithmic Transparency Recording Standard (ATRS)</a> record for AI/algorithmic tools</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/#projects/001-hmrc-chatbot/ARC-001-ATRS-v1.0.md" title="HMRC">v2</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v9-cabinet-office-genai/#projects/001-cabinet-office-genai/ARC-001-ATRS-v1.0.md" title="Cabinet Office">v9</a>
@@ -1248,10 +1385,12 @@
                         </td>
                         <td><span class="app-status-tag app-status-alpha">Alpha</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="quality-compliance">
+                    <tr data-status="beta" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.secure</code></td>
                         <td class="description">Generate a Secure by Design assessment for UK Government projects (civilian departments)</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v8-ons-data-platform/#projects/001-ons-data-platform-modernisation/ARC-001-SECD-v1.0.md" title="ONS Data">v8</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v9-cabinet-office-genai/#projects/001-cabinet-office-genai/ARC-001-SECD-v1.0.md" title="Cabinet Office">v9</a>
@@ -1264,29 +1403,35 @@
                         </td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="quality-compliance">
+                    <tr data-status="experimental" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.mod-secure</code></td>
                         <td class="description">Generate a MOD Secure by Design assessment for UK Ministry of Defence projects using CAAT and continuous assurance</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-SECD-MOD-v1.0.md" title="Windows 11 Migration">v3/001</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/006-large-format-printer/ARC-006-SECD-MOD-v1.0.md" title="Large Format Printer">v3/006</a>
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="quality-compliance">
+                    <tr data-status="experimental" data-category="quality-compliance" data-jurisdiction="uk" data-tier="core">
                         <td><code>/arckit.jsp-936</code></td>
                         <td class="description">Generate <a href="https://www.gov.uk/government/publications/jsp-936-dependable-artificial-intelligence-ai-in-defence-part-1-directive" class="govuk-link">MOD JSP 936</a> AI assurance documentation for defence AI/ML systems</td>
                         <td>Quality &amp; Compliance</td>
+                        <td>UK</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- Reporting -->
-                    <tr data-status="live" data-category="reporting">
+                    <tr data-status="live" data-category="reporting" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.story</code></td>
                         <td class="description">Generate comprehensive project story with timeline analysis, traceability, and governance achievements</td>
                         <td>Reporting</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v3-windows11/#projects/001-windows-11-migration-intune/ARC-001-STORY-v1.0.md" title="Windows 11">v3</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v8-ons-data-platform/#projects/001-ons-data-platform-modernisation/ARC-001-STORY-v1.0.md" title="ONS Data">v8</a>
@@ -1295,17 +1440,21 @@
                         </td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="reporting">
+                    <tr data-status="beta" data-category="reporting" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.presentation</code></td>
                         <td class="description">Generate MARP slide deck from project artifacts for governance boards and stakeholder briefings</td>
                         <td>Reporting</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="alpha" data-category="reporting">
+                    <tr data-status="alpha" data-category="reporting" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.pages</code></td>
                         <td class="description">Generate GitHub Pages documentation site with Mermaid diagrams, artifact health dashboard, vendor profiles, tech notes, dark mode, guide auto-sync, and LLM-friendly <code>llms.txt</code> index</td>
                         <td>Reporting</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                             <a href="https://tractorjuice.github.io/arckit-test-project-v1-m365/" title="M365">v1</a>
                             <a href="https://tractorjuice.github.io/arckit-test-project-v2-hmrc-chatbot/" title="HMRC">v2</a>
@@ -1326,392 +1475,500 @@
                     </tr>
 
                     <!-- Utility -->
-                    <tr data-status="live" data-category="utility">
+                    <tr data-status="live" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.init</code></td>
                         <td class="description">Initialize ArcKit project structure with numbered project directories and global artifacts</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="utility">
+                    <tr data-status="live" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.customize</code></td>
                         <td class="description">Copy templates to <code>.arckit/templates-custom/</code> for customization (preserved across updates)</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="alpha" data-category="utility">
+                    <tr data-status="alpha" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.template-builder</code></td>
                         <td class="description">Create new document templates through interactive interview with three-tier origin model (Official/Custom/Community)</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-alpha">Alpha</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="utility">
+                    <tr data-status="beta" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.health</code></td>
                         <td class="description">Scan projects for stale research, forgotten ADRs, unresolved review conditions, orphaned requirements, missing traceability, and version drift</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="beta" data-category="utility">
+                    <tr data-status="beta" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.search</code></td>
                         <td class="description">Search across all project artifacts by keyword, document type, or requirement ID</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-beta">Beta</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="utility">
+                    <tr data-status="experimental" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.impact</code></td>
                         <td class="description">Analyse blast radius of changes — reverse dependency tracing</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">
                         </td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="live" data-category="utility">
+                    <tr data-status="live" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.navigator</code></td>
                         <td class="description">Project-level GPS — show coverage against the essential ArcKit baseline, surface DRAFT/stale/orphan artifacts, and recommend the next slash command to run</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
-                    <tr data-status="live" data-category="utility">
+                    <tr data-status="live" data-category="utility" data-jurisdiction="generic" data-tier="core">
                         <td><code>/arckit.graph-report</code></td>
                         <td class="description">Governance metrics dashboard — coverage by category, cross-reference density, compliance readiness, and project comparison across all working projects</td>
                         <td>Utility</td>
+                        <td>Generic</td>
+                        <td>Core</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-live">Live</span></td>
                     </tr>
 
                     <!-- Canada Federal Overlay (Community-contributed, v4.14.0) -->
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-fitaa</code></td>
                         <td class="description">[COMMUNITY] Foreign Influence Transparency and Accountability Act (Bill C-70 2024) compliance assessment</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-pia</code></td>
                         <td class="description">[COMMUNITY] Privacy Impact Assessment per the Privacy Act and TBS Directive on Privacy Impact Assessment</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-atip</code></td>
                         <td class="description">[COMMUNITY] Access to Information / Privacy Act reconciliation and severance design</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-aia</code></td>
                         <td class="description">[COMMUNITY] Algorithmic Impact Assessment per TBS Directive on Automated Decision-Making (Levels I–IV)</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-charter</code></td>
                         <td class="description">[COMMUNITY] Charter rights design review (s.2 / s.7 / s.8 / s.15) with Oakes proportionality analysis</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-itsg-33</code></td>
                         <td class="description">[COMMUNITY] ITSG-33 Statement of Applicability with Standard on Security Categorization mapping</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-soia</code></td>
                         <td class="description">[COMMUNITY] Security of Information Act handling plan for SECRET / TOP SECRET systems</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-cloud-residency</code></td>
                         <td class="description">[COMMUNITY] GC Cloud sovereign residency assessment with CLOUD-Act extraterritorial analysis</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-gc-digital-standards</code></td>
                         <td class="description">[COMMUNITY] Government of Canada Digital Standards conformance scorecard</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-ola</code></td>
                         <td class="description">[COMMUNITY] Official Languages Act review (Parts IV / V / VI) — service to public, language of work, equitable participation</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-pspc</code></td>
                         <td class="description">[COMMUNITY] Federal procurement strategy under the PSPC Supply Manual with PSAB 5% Indigenous procurement target</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="ca-overlay">
+                    <tr data-status="experimental" data-category="ca-overlay" data-jurisdiction="canada" data-tier="community">
                         <td><code>/arckit.ca-ocap</code></td>
                         <td class="description">[COMMUNITY] First Nations OCAP® sovereignty assessment with FNIGC pre-engagement gate</td>
                         <td>Canada Federal Overlay</td>
+                        <td>Canada</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- UAE Federal Overlay (Community-contributed, v4.10.1) -->
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-classification</code></td>
                         <td class="description">[COMMUNITY] UAE Smart Data Classification Register — maps every dataset to Open / Shared / Confidential / Secret / Top Secret with handling rules and declassification schedule</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-pdpl</code></td>
                         <td class="description">[COMMUNITY] PDPL (Federal Decree-Law 45/2021) compliance assessment with DPIA, lawful-basis register, data-subject-rights procedure, cross-border transfer log</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-ias</code></td>
                         <td class="description">[COMMUNITY] UAE IAS Statement of Applicability against the 188 controls (60 management M1–M6 + 128 technical T1–T9), priority-tiered P1–P4</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-cloud-residency</code></td>
                         <td class="description">[COMMUNITY] Sovereign cloud residency assessment under the National Cloud Security Policy v2 — Core42 / G42, Microsoft UAE North + Central, TDRA FedNet, e&amp; Sovereign Launchpad</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-uaepass</code></td>
                         <td class="description">[COMMUNITY] UAE Pass integration design — OIDC/OAuth flow, claim mapping, Basic vs Verified profile, Service Provider onboarding pack, e-signature audit trail</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-zero-bureaucracy</code></td>
                         <td class="description">[COMMUNITY] Service catalogue review under the UAE Code for Government Services and Zero Bureaucracy — bureaucracy-elimination baseline and customer-experience KPIs</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-digital-records</code></td>
                         <td class="description">[COMMUNITY] Digital Records Plan under the UAE Government Services Digital Records Policy — source-of-truth register, retention schedule, records-as-official-source</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-data-sharing</code></td>
                         <td class="description">[COMMUNITY] Data Sharing Agreement under the UAE Government Services Data Sharing Policy — collect-once mapping, federation/API plan, PDPL lawful basis per share</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-priorities-alignment</code></td>
                         <td class="description">[COMMUNITY] National Priorities Alignment Statement under the UAE Federal Government Guide — reuse-vs-build, capability-reuse register, alignment to NIS 2031 / AI 2031 / We the UAE 2031</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-ai-charter</code></td>
                         <td class="description">[COMMUNITY] UAE Charter for the Development and Use of AI — compliance assessment against the 12 principles (human-machine ties, safety, bias mitigation, etc.)</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-ai-autonomy-tier</code></td>
                         <td class="description">[COMMUNITY] Three-tier AI autonomy posture — Tier 1 internal-productivity / Tier 2 investor-facing-with-approval / Tier 3 regulated-or-financial — with per-tier guard-rails and promotion criteria</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="uae-overlay">
+                    <tr data-status="experimental" data-category="uae-overlay" data-jurisdiction="uae" data-tier="community">
                         <td><code>/arckit.uae-procurement</code></td>
                         <td class="description">[COMMUNITY] UAE federal procurement strategy under Federal Decree-Law 11/2023 — ITT/RFP packs, MoF Digital Procurement Platform alignment, In-Country Value plan</td>
                         <td>UAE Federal Overlay</td>
+                        <td>UAE</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- EU Regulatory Overlay (Community-contributed) -->
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-rgpd</code></td>
                         <td class="description">[COMMUNITY] GDPR (EU 2016/679) compliance assessment — Art. 6/9 lawful basis, EDPB DPIA screening, Schrems II transfer rules</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-nis2</code></td>
                         <td class="description">[COMMUNITY] NIS2 Directive scoping (Annex I &amp; II), Article 21 minimum measures, four-stage incident reporting timeline</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-ai-act</code></td>
                         <td class="description">[COMMUNITY] EU AI Act (2024/1689) risk classification — Article 5 prohibited, Annex III high-risk, GPAI obligations under Articles 53–55</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-dora</code></td>
                         <td class="description">[COMMUNITY] Digital Operational Resilience Act — ICT third-party register, threat-led pen-testing, four-hour incident reporting window</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-cra</code></td>
                         <td class="description">[COMMUNITY] EU Cyber Resilience Act — Annex I essential requirements, SBOM (SPDX/CycloneDX), CE marking</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-dsa</code></td>
                         <td class="description">[COMMUNITY] EU Digital Services Act — intermediary / hosting / online platform / VLOP (45M+ EU MAU) classification</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="eu-overlay">
+                    <tr data-status="experimental" data-category="eu-overlay" data-jurisdiction="eu" data-tier="community">
                         <td><code>/arckit.eu-data-act</code></td>
                         <td class="description">[COMMUNITY] EU Data Act — connected products, B2B FRAND data sharing, cloud switching obligations under Chapter VI, Article 27 transfer restrictions</td>
                         <td>EU Regulatory Overlay</td>
+                        <td>EU</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- French Government Overlay (Community-contributed) -->
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-secnumcloud</code></td>
                         <td class="description">[COMMUNITY] ANSSI SecNumCloud 3.2 cloud qualification — provider matrices for S3NS, Outscale, OVHcloud, Bleu, NumSpot, Cloud Temple plus FISA Section 702 residual risk</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-rgpd</code></td>
                         <td class="description">[COMMUNITY] CNIL-specific layer over EU RGPD — Délibération 2020-091 cookies, HDS for health data, French digital consent at 15</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-ebios</code></td>
                         <td class="description">[COMMUNITY] EBIOS Risk Manager — five-workshop ANSSI methodology, MITRE ATT&amp;CK mapping, homologation recommendation</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-anssi</code></td>
                         <td class="description">[COMMUNITY] ANSSI Security Posture — 42-measure Guide d'hygiène informatique + cloud security recommendations</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-anssi-carto</code></td>
                         <td class="description">[COMMUNITY] ANSSI Information System Cartography across the four reading levels: business, application, system, network</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-pssi</code></td>
                         <td class="description">[COMMUNITY] Politique de Sécurité des Systèmes d'Information — RGS and ANSSI references, integrates with eu-nis2</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-dr</code></td>
                         <td class="description">[COMMUNITY] Diffusion Restreinte handling under Instruction Interministérielle 901 (SGDSN/ANSSI) — marking, storage, transmission, destruction</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-marche-public</code></td>
                         <td class="description">[COMMUNITY] French public procurement under code de la commande publique — UGAP catalogue, 40k/215k euro thresholds, sovereignty clauses</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-dinum</code></td>
                         <td class="description">[COMMUNITY] DINUM five référentiels — RGI, RGAA, RGESN, RGS, doctrine cloud de l'État — plus FranceConnect and DSFR applicability</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-algorithme-public</code></td>
                         <td class="description">[COMMUNITY] Public algorithm transparency notice required by Article L311-3-1 CRPA (Loi République Numérique)</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-code-reuse</code></td>
                         <td class="description">[COMMUNITY] Build-vs-reuse decision matrix against code.gouv.fr, the SILL, and EUPL-licensed European public code repositories</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="fr-overlay">
+                    <tr data-status="experimental" data-category="fr-overlay" data-jurisdiction="france" data-tier="community">
                         <td><code>/arckit.fr-irn</code></td>
                         <td class="description">[COMMUNITY] Indice de Résilience Numérique — French digital resilience index assessment</td>
                         <td>French Government Overlay</td>
+                        <td>France</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
 
                     <!-- Austrian Government Overlay (Community-contributed) -->
-                    <tr data-status="experimental" data-category="at-overlay">
+                    <tr data-status="experimental" data-category="at-overlay" data-jurisdiction="austria" data-tier="community">
                         <td><code>/arckit.at-dsgvo</code></td>
                         <td class="description">[COMMUNITY] Austrian Datenschutzgesetz (DSG) and DSGVO compliance assessment — DSB notification, employer-context exemptions, sectoral rules</td>
                         <td>Austrian Government Overlay</td>
+                        <td>Austria</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="at-overlay">
+                    <tr data-status="experimental" data-category="at-overlay" data-jurisdiction="austria" data-tier="community">
                         <td><code>/arckit.at-nisg</code></td>
                         <td class="description">[COMMUNITY] Austrian NISG (NIS2 transposition) — sector scoping, qualified body audits, BMI reporting timelines</td>
                         <td>Austrian Government Overlay</td>
+                        <td>Austria</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
-                    <tr data-status="experimental" data-category="at-overlay">
+                    <tr data-status="experimental" data-category="at-overlay" data-jurisdiction="austria" data-tier="community">
                         <td><code>/arckit.at-bvergg</code></td>
                         <td class="description">[COMMUNITY] Austrian public procurement under Bundesvergabegesetz 2018 — federal/sub-federal scope, SME thresholds, e-procurement obligations</td>
                         <td>Austrian Government Overlay</td>
+                        <td>Austria</td>
+                        <td>Community</td>
                         <td class="examples">—</td>
                         <td><span class="app-status-tag app-status-experimental">Experimental</span></td>
                     </tr>
@@ -1720,21 +1977,51 @@
         </div>
 
         <div class="govuk-inset-text">
-            <strong>Example repos:</strong>
+            <strong>Example repos (44 public test projects):</strong>
             <a href="https://github.com/tractorjuice/arckit-test-project-v1-m365" class="govuk-link">v1-M365</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v2-hmrc-chatbot" class="govuk-link">v2-HMRC</a> |
-            <a href="https://github.com/tractorjuice/arckit-test-project-v3-windows11" class="govuk-link">v3-Windows11</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v3-windows11" class="govuk-link">v3-Windows 11</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v6-patent-system" class="govuk-link">v6-Patent</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v7-nhs-appointment" class="govuk-link">v7-NHS</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v8-ons-data-platform" class="govuk-link">v8-ONS</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v9-cabinet-office-genai" class="govuk-link">v9-Cabinet Office</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v10-training-marketplace" class="govuk-link">v10-Training</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v11-national-highways-data" class="govuk-link">v11-Highways</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v13-plymouth-research" class="govuk-link">v13-Plymouth</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v14-scottish-courts" class="govuk-link">v14-SCTS</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v16-doctors-appointment" class="govuk-link">v16-Doctors</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v17-fuel-prices" class="govuk-link">v17-Fuel Prices</a> |
             <a href="https://github.com/tractorjuice/arckit-test-project-v18-smart-meter" class="govuk-link">v18-Smart Meter</a> |
-            <a href="https://github.com/tractorjuice/arckit-test-project-v19-gov-api-aggregator" class="govuk-link">v19-Gov API Aggregator</a>
+            <a href="https://github.com/tractorjuice/arckit-test-project-v19-gov-api-aggregator" class="govuk-link">v19-Gov API Aggregator</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v21-criminal-courts" class="govuk-link">v21-Criminal Courts</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v22-genai-playbook" class="govuk-link">v22-GenAI Playbook</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v23-ccs-procurement-ai" class="govuk-link">v23-CCS</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v24-cabinet-office-ai" class="govuk-link">v24-Cabinet Office AI</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v25-dbt-trade-ai" class="govuk-link">v25-DBT Trade</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v26-dfe-education-ai" class="govuk-link">v26-DfE Education</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v27-defra-environment-ai" class="govuk-link">v27-DEFRA</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v28-desnz-energy-ai" class="govuk-link">v28-DESNZ Energy</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v29-dhsc-health-ai" class="govuk-link">v29-DHSC Health</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v30-dluhc-planning-ai" class="govuk-link">v30-DLUHC Planning</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v31-dsit-responsible-ai" class="govuk-link">v31-DSIT</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v32-dft-transport-ai" class="govuk-link">v32-DfT Transport</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v33-dwp-benefits-ai" class="govuk-link">v33-DWP Benefits</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v34-fcdo-diplomatic-ai" class="govuk-link">v34-FCDO</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v35-gld-legal-ai" class="govuk-link">v35-GLD Legal</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v36-hmlr-land-ai" class="govuk-link">v36-HMLR Land</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v37-hmrc-tax-ai" class="govuk-link">v37-HMRC Tax</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v38-hmt-fiscal-ai" class="govuk-link">v38-HMT Fiscal</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v39-home-office-borders-ai" class="govuk-link">v39-Home Office</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v40-mod-defence-ai" class="govuk-link">v40-MoD Defence</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v41-moj-justice-ai" class="govuk-link">v41-MoJ Justice</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v42-no10-ds-policy-ai" class="govuk-link">v42-No.10 DS</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v43-iai-gov-ai-products" class="govuk-link">v43-i.AI</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v44-australian-gov" class="govuk-link">v44-Australian Gov</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v45-nsi-rainbow" class="govuk-link">v45-NS&amp;I Rainbow</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v46-gds-local" class="govuk-link">v46-GDS Local</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v46-sdg" class="govuk-link">v46-SDG</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v47-dft-transforming-city-regions" class="govuk-link">v47-DfT City Regions</a> |
+            <a href="https://github.com/tractorjuice/arckit-test-project-v48-arckit-as-a-service" class="govuk-link">v48-ArcKit as a Service</a>
         </div>
     </div>
 
@@ -4644,6 +4931,8 @@
         function filterTable() {
             const statusFilter = document.getElementById('status-filter').value;
             const categoryFilter = document.getElementById('category-filter').value;
+            const jurisdictionFilter = document.getElementById('jurisdiction-filter').value;
+            const tierFilter = document.getElementById('tier-filter').value;
             const searchFilter = document.getElementById('search-filter').value.toLowerCase();
             const table = document.getElementById('command-table');
             const rows = table.querySelectorAll('tbody tr');
@@ -4652,13 +4941,17 @@
             rows.forEach(row => {
                 const status = row.getAttribute('data-status');
                 const category = row.getAttribute('data-category');
+                const jurisdiction = row.getAttribute('data-jurisdiction');
+                const tier = row.getAttribute('data-tier');
                 const text = row.textContent.toLowerCase();
 
                 const statusMatch = statusFilter === 'all' || status === statusFilter;
                 const categoryMatch = categoryFilter === 'all' || category === categoryFilter;
+                const jurisdictionMatch = jurisdictionFilter === 'all' || jurisdiction === jurisdictionFilter;
+                const tierMatch = tierFilter === 'all' || tier === tierFilter;
                 const searchMatch = searchFilter === '' || text.includes(searchFilter);
 
-                if (statusMatch && categoryMatch && searchMatch) {
+                if (statusMatch && categoryMatch && jurisdictionMatch && tierMatch && searchMatch) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -4689,7 +4982,7 @@
             rows.sort((a, b) => {
                 let aValue, bValue;
 
-                if (columnIndex === 4) {
+                if (columnIndex === 6) {
                     // Status column - sort by maturity level
                     const statusOrder = { 'live': 1, 'beta': 2, 'alpha': 3, 'experimental': 4 };
                     aValue = statusOrder[a.getAttribute('data-status')] || 5;
@@ -4715,6 +5008,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('status-filter').addEventListener('change', filterTable);
             document.getElementById('category-filter').addEventListener('change', filterTable);
+            document.getElementById('jurisdiction-filter').addEventListener('change', filterTable);
+            document.getElementById('tier-filter').addEventListener('change', filterTable);
             document.getElementById('search-filter').addEventListener('input', filterTable);
 
             document.querySelectorAll('#command-table th[data-sort-col]').forEach(function(th) {
