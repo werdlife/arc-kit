@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.1] - 2026-05-06
+
+### Fixed
+
+- **`/arckit:pages` dashboard now enumerates data-source profiles.** v4.17.0 introduced `projects/{P}-{NAME}/data-sources/{provider-slug}-profile.md` files but the pages pipeline was unaware of them: the `sync-guides` hook didn't scan that directory, the manifest had no `dataSourceProfiles` array, the dashboard sidebar / search index / category chips didn't render them, and `llms.txt` didn't list them. Wired through:
+  - `sync-guides.mjs` — initialises `project.dataSourceProfiles[]`, scans `projects/*/data-sources/*-profile.md`, populates titles from first heading or slug, deletes empty arrays, increments `dataSourceProfileCount`, lists profiles in `llms.txt` per project.
+  - `pages-template.html` — adds a "Data Source Profiles" category to the search index and a sidebar section under each project (rendered via the shared `renderVersionedDocList`).
+  - `pages.md` — updates the manifest schema example, the artefact-types table, and the KPI summary to include the new category.
+
 ## [4.17.0] - 2026-05-06
 
 ### Added

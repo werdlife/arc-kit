@@ -183,8 +183,10 @@ projects/
 │   │       ├── hld*.md
 │   │       ├── dld*.md
 │   │       └── proposal*.md
-│   ├── tech-notes/                       # Tech notes
+│   ├── tech-notes/                       # Tech notes (from /arckit:research)
 │   │   └── {topic-slug}.md
+│   ├── data-sources/                     # Data-source profiles (from /arckit:datascout)
+│   │   └── {provider-slug}-profile.md
 │   └── external/
 │       ├── README.md             # (excluded from listing)
 │       ├── rfp-document.pdf
@@ -264,6 +266,9 @@ Only include these known artifact types. Match by type code pattern `ARC-{PID}-{
 | | GCSR | `ARC-*-GCSR-*.md` | Government Code Search Report |
 | | GLND | `ARC-*-GLND-*.md` | Government Landscape Analysis |
 | | GRNT | `ARC-*-GRNT-*.md` | Grants Research |
+| | | `data-sources/*-profile.md` | Data Source Profiles (from `/arckit:datascout`) |
+| | | `tech-notes/*.md` | Tech Notes (from `/arckit:research`) |
+| | | `vendors/*-profile.md` | Vendor Profiles (from `/arckit:research`) |
 | **Reporting** | | | |
 | | STORY | `ARC-*-STORY-*.md` | Project Story |
 | | PRES | `ARC-*-PRES-*.md` | Presentation (MARP) |
@@ -482,6 +487,12 @@ The hook generates `docs/manifest.json` with this structure:
           "title": "AWS Lambda"
         }
       ],
+      "dataSourceProfiles": [
+        {
+          "path": "projects/001-project-name/data-sources/companies-house-profile.md",
+          "title": "Companies House"
+        }
+      ],
       "external": [
         {
           "path": "projects/001-project-name/external/rfp-document.pdf",
@@ -525,6 +536,7 @@ Document Breakdown:
 - Vendor Profiles: {vendor_profile_count}
 - Vendor Scores: {scored_vendor_count} scored across {scored_project_count} project(s)
 - Tech Notes: {tech_note_count}
+- Data Source Profiles: {data_source_profile_count}
 
 Features:
 - Dashboard view with KPI cards, charts, and governance checklist (default landing page)

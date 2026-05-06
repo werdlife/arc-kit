@@ -392,6 +392,7 @@ function scanProject(repoRoot, projectName) {
     vendors: [],
     vendorProfiles: [],
     techNotes: [],
+    dataSourceProfiles: [],
     external: [],
   };
 
@@ -543,6 +544,27 @@ function scanProject(repoRoot, projectName) {
     }
   }
 
+  // Data source profiles (from /arckit:datascout — same shape as vendor profiles)
+  const dataSourcesDir = join(projectDir, 'data-sources');
+  if (isDir(dataSourcesDir)) {
+    for (const f of listDir(dataSourcesDir)) {
+      if (f === 'README.md' || f.startsWith('.')) continue;
+      const fp = join(dataSourcesDir, f);
+      if (isFile(fp) && f.endsWith('-profile.md')) {
+        const heading = extractFirstHeading(fp);
+        const sourceSlug = f.replace(/-profile\.md$/, '');
+        const titleFromSlug = sourceSlug
+          .split('-')
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+        project.dataSourceProfiles.push({
+          path: `${projectPath}/data-sources/${f}`,
+          title: heading || titleFromSlug,
+        });
+      }
+    }
+  }
+
   // External files
   const extDir = join(projectDir, 'external');
   if (isDir(extDir)) {
@@ -560,7 +582,7 @@ function scanProject(repoRoot, projectName) {
   }
 
   // Remove empty arrays
-  for (const key of ['diagrams', 'decisions', 'wardleyMaps', 'dataContracts', 'reviews', 'research', 'vendors', 'vendorProfiles', 'techNotes', 'external']) {
+  for (const key of ['diagrams', 'decisions', 'wardleyMaps', 'dataContracts', 'reviews', 'research', 'vendors', 'vendorProfiles', 'techNotes', 'dataSourceProfiles', 'external']) {
     if (project[key].length === 0) delete project[key];
   }
 
@@ -676,6 +698,11 @@ function buildLlmsTxt(manifest, repoInfo, version) {
       if (project.techNotes) {
         for (const doc of project.techNotes) {
           lines.push(`- [${doc.title}](${mdUrl(doc.path)}): Technical note.`);
+        }
+      }
+      if (project.dataSourceProfiles) {
+        for (const doc of project.dataSourceProfiles) {
+          lines.push(`- [${doc.title} data source profile](${mdUrl(doc.path)}): Data source profile.`);
         }
       }
       lines.push('');
@@ -962,6 +989,7 @@ let reviewCount = 0;
 let vendorDocCount = 0;
 let vendorProfileCount = 0;
 let techNoteCount = 0;
+let dataSourceProfileCount = 0;
 for (const p of manifest.projects) {
   projectDocCount = projectDocCount + (p.documents ? p.documents.length : 0);
   diagramCount = diagramCount + (p.diagrams ? p.diagrams.length : 0);
@@ -973,6 +1001,7 @@ for (const p of manifest.projects) {
   if (p.vendors) for (const v of p.vendors) vendorDocCount = vendorDocCount + v.documents.length;
   vendorProfileCount = vendorProfileCount + (p.vendorProfiles ? p.vendorProfiles.length : 0);
   techNoteCount = techNoteCount + (p.techNotes ? p.techNotes.length : 0);
+  dataSourceProfileCount = dataSourceProfileCount + (p.dataSourceProfiles ? p.dataSourceProfiles.length : 0);
 }
 let scoredVendorCount = 0;
 for (const p of manifest.projects) {
@@ -1018,6 +1047,7 @@ const message = [
   `| Vendor Documents | ${vendorDocCount} |`,
   `| Vendor Profiles | ${vendorProfileCount} |`,
   `| Tech Notes | ${techNoteCount} |`,
+  `| Data Source Profiles | ${dataSourceProfileCount} |`,
   `| Scored Vendors | ${scoredVendorCount} |`,
   `| Graph Nodes | ${manifest.dependencyGraph ? Object.keys(manifest.dependencyGraph.nodes).length : 0} |`,
   `| Graph Edges | ${manifest.dependencyGraph ? manifest.dependencyGraph.edges.length : 0} |`,

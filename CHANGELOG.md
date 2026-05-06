@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.1] - 2026-05-06
+
+### Fixed
+
+- **`/arckit:pages` now enumerates data-source profiles** introduced in v4.17.0. Wired the new `data-sources/{provider-slug}-profile.md` files through `sync-guides.mjs` (manifest scan + count + llms.txt entries), `pages-template.html` (sidebar section + search index category), and `commands/pages.md` (KPI table + manifest schema docs).
+
 ## [4.17.0] - 2026-05-06
 
 ### Added
