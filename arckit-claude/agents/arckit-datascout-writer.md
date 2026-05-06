@@ -64,25 +64,66 @@ The orchestrator passes you a JSON object in its Agent prompt:
 
 ## Process
 
-1. **Read the template.** Open `${CLAUDE_PLUGIN_ROOT}/templates/datascout-template.md`.
+### Step A: Render the main DSCT artefact
+
+1. **Read the DSCT template.** Open `${CLAUDE_PLUGIN_ROOT}/templates/datascout-template.md`.
 
 2. **Read the project's previous artefact if one exists.** `Glob` for `{project_path}/research/ARC-{project_id}-DSCT-*-v*.md`. If found, read the highest-version file to copy forward the Document Control authorship metadata (Owner, Reviewed By, Approved By).
 
 3. **Render the document by template substitution.** Walk the template top to bottom. For each placeholder (`[PROJECT_ID]`, `[VERSION]`, `[DATE]`, etc.), substitute the corresponding payload field. For each section that iterates the payload (per-source evaluation cards, comparison matrices, gap analysis, traceability matrix, External References), generate one block per payload entry following the template's per-block format.
 
-4. **Write the file.** Use the `Write` tool to save to `{project_path}/research/{document_id}.md`.
+4. **Append a `## Spawned Knowledge` section at the end** listing the per-source profiles you will create or update in Step B:
 
-5. **Return a one-line summary** to the orchestrator: `Wrote {document_id}.md ({word_count} words, {source_count} sources, {gap_count} gaps).`
+   ```markdown
+   ## Spawned Knowledge
+
+   The following standalone data-source profile files were created or updated from this discovery run:
+
+   ### Data Source Profiles
+   - `data-sources/{provider-slug}-profile.md` — {Created | Updated}
+   ```
+
+5. **Write the DSCT file.** Use the `Write` tool to save to `{project_path}/research/{document_id}.md`.
+
+### Step B: Spawn one profile per scored source
+
+For each entry in `scored_sources` (after dedup, before ranking), generate one profile file:
+
+1. **Compute the provider-slug** from `source_record.provider`: lowercase, strip leading "the ", strip non-alphanumeric except hyphens, replace whitespace with single hyphens, collapse repeats. Examples: "Companies House" → `companies-house`, "AT&T" → `at-t`, "DfT (Department for Transport)" → `dft-department-for-transport`.
+
+2. **Glob for an existing profile**: `{project_path}/data-sources/*{provider-slug}*-profile.md`. If multiple match, prefer the one whose filename equals exactly `{provider-slug}-profile.md`.
+
+3. **If no profile exists**: read `${CLAUDE_PLUGIN_ROOT}/templates/data-source-profile-template.md`, render it from the `source_record` + `score_breakdown` + `requirements_matched`, and `Write` to `{project_path}/data-sources/{provider-slug}-profile.md`. Mark this entry as `Created` in the Spawned Knowledge section of the DSCT artefact.
+
+4. **If a profile exists**: read it, then apply these merge rules per section:
+   - **Overview** — keep existing prose; do not overwrite. The reader's input is factual evidence, not strategic narrative.
+   - **Evidence table** — replace fully. Every row is a current factual reading; if a previous run captured `licence_type: Commercial` and the current run captures `OGL-v3`, the new value wins. The Last researched timestamp is updated.
+   - **Weighted Score table** — replace fully. Scoring is deterministic given evidence + rubric; the new score IS the correct score for this run's evidence.
+   - **Requirements Matched** — replace with the current run's matches.
+   - **Projects Referenced In** — append `{PROJECT_ID}-{PROJECT_NAME}` if not already listed; never remove existing entries.
+   - **Last Updated** — set to today's date.
+   - **Revision History** (in Document Control block) — append a new row: `| {next-minor-version} | {DATE} | ArcKit AI | Refreshed evidence + score from /arckit:datascout run | PENDING | PENDING |`.
+
+   Mark the entry as `Updated` in the Spawned Knowledge section.
+
+### Step C: Return summary
+
+Return a one-line summary to the orchestrator:
+
+```
+Wrote {document_id}.md ({word_count} words). Spawned data-source profiles: {n_created} created, {n_updated} updated.
+```
 
 ## What you must never do
 
 - Use `WebSearch`, `WebFetch`, or any MCP tool (you do not have them — and that is intentional).
 - Use `Agent` to recurse (you do not have it — and that is intentional).
-- Synthesise content not present in the input payload — if a field is missing, write the template placeholder.
-- Modify any file outside `{project_path}/research/`.
+- Synthesise content not present in the input payload — if a field is missing, write the template placeholder (e.g. `—` or `[NOT EVALUATED]`).
+- Modify any file outside `{project_path}/research/` and `{project_path}/data-sources/`.
+- Re-score sources. Score values come from the orchestrator's `score_breakdown` and are rendered verbatim.
 
 ## Toolchain
 
-- **Template** — `${CLAUDE_PLUGIN_ROOT}/templates/datascout-template.md`
+- **Templates** — `${CLAUDE_PLUGIN_ROOT}/templates/datascout-template.md` · `${CLAUDE_PLUGIN_ROOT}/templates/data-source-profile-template.md`
 - **Tools** — `Read` · `Write` · `Edit`
-- **Invoked by** — `arckit-datascout` (the orchestrator)
+- **Invoked by** — `/arckit:datascout` (the orchestrator slash command)

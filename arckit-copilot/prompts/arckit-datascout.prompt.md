@@ -178,41 +178,59 @@ Glob `projects/{project-dir}/research/ARC-{PROJECT_ID}-DSCT-*-v*.md`. If none, v
 
 ### Step 9: Dispatch writer subagent
 
-Ensure the destination directory exists (the writer subagent has only `Read`/`Write`/`Edit` and cannot create directories):
+Ensure the destination directories exist (the writer subagent has only `Read`/`Write`/`Edit` and cannot create directories):
 
 ```bash
-mkdir -p "{project_path}/research"
+mkdir -p "{project_path}/research" "{project_path}/data-sources"
 ```
 
-Build the writer's input:
+Build the writer's input. Each entry in `scored_sources` carries the full `source_record` (provider, name, fetched_from_url, citation_id, evidence sub-object, confidence), the per-criterion `score_breakdown`, the rolled-up `total_score`, and `requirements_matched` — the array of requirement IDs that pointed to this source via the trigger-keyword map:
 
 ```json
 {
-  "project_path": "...",
-  "project_id": "...",
-  "project_name": "...",
+  "project_path": "projects/{P}-{NAME}",
+  "project_id": "{P}",
+  "project_name": "{NAME}",
   "document_id": "ARC-{P}-DSCT-v{VERSION}",
-  "version": "...",
+  "version": "{VERSION}",
   "date_iso": "<today>",
   "classification": "OFFICIAL",
   "rubric_used": "uk-gov",
-  "scored_sources": [...],
+  "scored_sources": [
+    {
+      "category": "company",
+      "source_type": "uk-gov",
+      "rank": 1,
+      "total_score": 87,
+      "score_breakdown": {
+        "requirements_fit": 22,
+        "data_quality": 18,
+        "licence_and_cost": 14,
+        "api_quality": 13,
+        "compliance": 13,
+        "reliability": 7
+      },
+      "source_record": { /* the full SourceRecord from the reader's payload */ },
+      "requirements_matched": ["DR-001", "FR-015"]
+    }
+  ],
   "gaps": [...],
   "traceability": [...],
   "citations": [...]
 }
 ```
 
-Dispatch the writer using the `Agent` tool with `subagent_type: "arckit-datascout-writer"` and the input JSON as the prompt. The writer returns the file path and word count.
+Dispatch the writer using the `Agent` tool with `subagent_type: "arckit-datascout-writer"` and the input JSON as the prompt. The writer creates the DSCT artefact AND one `data-sources/{provider-slug}-profile.md` per scored source (Created if new, Updated with merge rules if a profile already exists). It returns a one-line summary with file path, word count, and profile counts.
 
 ### Step 10: Return summary
 
 Return ONLY a concise summary to the user:
 
-- Project name and file path created
+- Project name and DSCT file path created
 - Number of categories researched
 - Number of sources discovered (per source-type)
 - Top 3-5 ranked sources with scores
+- **Spawned knowledge** — `data-sources/{provider-slug}-profile.md` files: N created, M updated (verbatim from the writer's return value)
 - Requirements coverage percentage
 - Number of gaps identified
 - Rubric used

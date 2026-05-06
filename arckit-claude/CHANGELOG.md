@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.0] - 2026-05-06
+
+### Added
+
+- **Datascout now spawns per-source profile files**, mirroring the `Spawned Knowledge` pattern from `/arckit:research`. The writer subagent renders one `projects/{P}-{NAME}/data-sources/{provider-slug}-profile.md` per scored data source in addition to the main DSCT artefact. Each profile carries:
+  - The full evidence subtree (hosting country, certifications, licence type, pricing model, rate limit, refresh cadence, auth method, contract vehicles, supported data categories) with citation links to the URL where each fact was fetched from.
+  - The deterministic weighted score (per-criterion breakdown + total) computed from the rubric YAML.
+  - The list of project requirement IDs that pointed to this source via the trigger-keyword map.
+  - Document Control metadata + Revision History.
+- New template `arckit-claude/templates/data-source-profile-template.md`.
+- Re-run safety: when `/arckit:datascout` runs again on the same project and finds an existing profile, the writer applies merge rules (Overview prose preserved; Evidence + Score replaced with current run; `Projects Referenced In` appended; `Revision History` gets a new row).
+- Orchestrator's Step 9 input shape now carries `score_breakdown`, `total_score`, `requirements_matched` per scored source, and `mkdir -p`s `data-sources/` alongside `research/` before dispatching the writer.
+
 ## [4.16.6] - 2026-05-06
 
 ### Fixed

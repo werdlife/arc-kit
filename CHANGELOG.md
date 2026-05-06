@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.0] - 2026-05-06
+
+### Added
+
+- **Datascout spawns per-source profile files.** `/arckit:datascout` now produces one `projects/{P}-{NAME}/data-sources/{provider-slug}-profile.md` per scored data source (in addition to the main DSCT artefact), mirroring the `Spawned Knowledge` pattern from `/arckit:research`. Each profile carries the full reader-extracted evidence with citation links, the deterministic weighted score breakdown, and the project requirement IDs that pointed to that source. Re-running datascout on the same project applies merge rules (preserving narrative prose, replacing factual evidence + scores with the current run, appending project references). New template at `arckit-claude/templates/data-source-profile-template.md`.
+
 ## [4.16.6] - 2026-05-06
 
 ### Fixed
