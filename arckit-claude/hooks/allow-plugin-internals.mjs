@@ -69,6 +69,9 @@ function main() {
     if (isUnderPluginRoot(filePath)) {
       allow(`ArcKit: auto-allowed Read of plugin-internal file (${shortPath(filePath)})`);
     }
+    if (isArcKitTempfile(filePath)) {
+      allow('ArcKit: auto-allowed Read of ArcKit-managed tempfile');
+    }
   }
 
   if (toolName === 'Bash') {
@@ -95,15 +98,23 @@ function isUnderPluginRoot(p) {
 
 function commandTouchesPluginScripts(cmd) {
   if (!cmd || typeof cmd !== 'string') return false;
-  // The command string contains the absolute scripts/ path. We accept
-  // multi-statement Bash (heredoc + node + rm chains) because the
-  // presence of the absolute plugin path is itself the trust marker —
-  // an attacker forging a command can't fabricate a real plugin path.
-  if (!cmd.includes(SCRIPTS_DIR + '/')) return false;
-  // Reject obvious dangerous redirections targeting outside the plugin.
-  // Conservative: allow only if every reference to a path inside
-  // SCRIPTS_DIR is to a known helper.
-  const known = [
+  // Two trust markers — either form qualifies:
+  //   1. Resolved absolute path: /.../arckit-claude/scripts/...
+  //   2. Env-var literal: ${CLAUDE_PLUGIN_ROOT}/scripts/... — Claude
+  //      Code passes the LLM-emitted command to the hook with the env
+  //      var unexpanded; bash expands at execution time.
+  // An attacker-forged command can't fabricate the real plugin path,
+  // and ${CLAUDE_PLUGIN_ROOT} is a sentinel string the LLM only emits
+  // when the prompt instructed it to use plugin-internal helpers.
+  const PREFIXES = [
+    SCRIPTS_DIR + '/',
+    '${CLAUDE_PLUGIN_ROOT}/scripts/',
+  ];
+  let anyPrefixHit = false;
+  for (const p of PREFIXES) if (cmd.includes(p)) { anyPrefixHit = true; break; }
+  if (!anyPrefixHit) return false;
+
+  const KNOWN = new Set([
     'validate-handoff.mjs',
     'bash/common.sh',
     'bash/create-project.sh',
@@ -112,23 +123,35 @@ function commandTouchesPluginScripts(cmd) {
     'bash/list-projects.sh',
     'bash/migrate-filenames.sh',
     'bash/detect-stale-artifacts.sh',
-  ];
-  // Look for any reference to scripts/<thing> that is NOT in the known list.
-  const refs = cmd.match(new RegExp(escapeRegex(SCRIPTS_DIR) + '/[A-Za-z0-9_./-]+', 'g')) || [];
-  for (const r of refs) {
-    const tail = r.slice(SCRIPTS_DIR.length + 1);
-    if (!known.some(k => tail === k || tail.startsWith(k + ' ') || tail.startsWith(k + '\t'))) {
-      // Allow paths that match a known prefix but include args after a space —
-      // already covered. If we get here, the reference is to an unknown file
-      // under scripts/. Don't auto-allow.
-      if (!known.includes(tail)) return false;
-    }
+  ]);
+
+  // Collect every "scripts/<filename>" reference in the command string,
+  // regardless of which prefix introduces it. If any reference points
+  // to a filename NOT in the allowlist, refuse to auto-allow.
+  const refs = [];
+  for (const prefix of PREFIXES) {
+    const re = new RegExp(escapeRegex(prefix) + '([A-Za-z0-9_./-]+)', 'g');
+    const matches = [...cmd.matchAll(re)];
+    for (const m of matches) refs.push(m[1]);
   }
-  return refs.length > 0;
+  if (refs.length === 0) return false;
+  for (const tail of refs) {
+    if (!KNOWN.has(tail)) return false;
+  }
+  return true;
 }
 
 function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function isArcKitTempfile(p) {
+  if (!p || typeof p !== 'string') return false;
+  // ArcKit-managed tempfiles created by the orchestrator's mktemp call
+  // in commands/datascout.md (template /tmp/datascout-handoff.XXXXXX.json)
+  // and similar future patterns. Auto-allow Read against these so the
+  // orchestrator can re-inspect a payload it just wrote.
+  return /^\/tmp\/(datascout-handoff|arckit-[a-z]+-handoff)[A-Za-z0-9.-]*\.json$/.test(p);
 }
 
 function shortPath(p) {

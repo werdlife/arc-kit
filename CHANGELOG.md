@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.5] - 2026-05-06
+
+### Fixed
+
+- **Auto-allow hook now matches `${CLAUDE_PLUGIN_ROOT}` literal in commands** (was previously only matching the resolved absolute path; the orchestrator emits the env-var form which Claude Code passes through unexpanded to the hook).
+- **Auto-allow `Read` of `/tmp/datascout-handoff*.json` tempfiles** so the orchestrator can re-inspect its own validator payloads without per-file prompts.
+- **Forbid orchestrator from writing ad-hoc helper scripts.** LLM was hallucinating `dsct-score.mjs`, `dsct-build-writer-input.mjs`, etc. — added an explicit guardrail. All scoring math and payload assembly happens directly in conversation; the only bundled executables are the validator and `scripts/bash/*.sh` helpers.
+
 ## [4.16.4] - 2026-05-06
 
 ### Fixed

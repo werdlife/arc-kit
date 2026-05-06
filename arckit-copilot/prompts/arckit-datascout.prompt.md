@@ -32,6 +32,7 @@ writer agents are dispatched normally.
 - **Citation discipline.** Every figure in your scored output traces to a `citation_id` from the reader's payload, which traces to a `fetched_from_url`. Pass this chain through to the writer in the `citations` field of its input.
 - **Recommend, don't decide.** This command shortlists candidate data sources; the data architect and SIRO decide which to integrate and on what licence basis. Output remains DRAFT until accountable-officer sign-off.
 - **Write-tool isolation.** You do not write the artefact yourself — only the writer subagent does. Use `Write` only for tempfiles passed to the validator if you cannot use `mktemp` + heredoc.
+- **No ad-hoc helper scripts.** Do **NOT** write `dsct-score.mjs`, `dsct-build-writer-input.mjs`, `score-sources.sh`, or any other helper file to perform scoring, ranking, payload assembly, deduplication, or input shaping. The only executables this command needs are (a) the bundled `validate-handoff.mjs` validator, and (b) the bundled `scripts/bash/*.sh` helpers. **Every other data manipulation happens directly in this conversation** — JSON parsing, accumulator state, scoring math, sorting, payload assembly. Writing helper scripts triggers per-file permission prompts, doesn't get checked into the plugin, and adds nothing to reproducibility (the rubric YAML is already the source of truth).
 
 ## What you produce
 
@@ -150,14 +151,16 @@ For each (category, source_type) pair where the project has at least one require
 
 ### Step 6: Score each source deterministically
 
+Compute the score **directly in this conversation** — do not write a helper script (no `dsct-score.mjs`, no shell maths script, no node one-liner). The scoring is a small lookup-and-multiply that fits comfortably in your reasoning context, and the only `.mjs` files this plugin needs are already shipped (the validator). Writing a new helper triggers per-file permission prompts and doesn't add reproducibility — the rubric YAML is the source of truth.
+
 For each accumulated `SourceRecord`, apply the chosen rubric:
 
 - For each weighted criterion, compute the per-criterion score from the relevant `evidence` field using the rubric's `method` and `map` (or `bands`, `bonuses`, etc.).
-- Multiply each per-criterion score by its weight, sum to a final score in [0, 100].
+- Multiply each per-criterion score by its weight (as a fraction — 25% = 0.25), sum to a final score in [0, 100].
 - For the `uk-gov` rubric, also apply `data_residency_bonus`: look up `evidence.hosted_in_iso_country` in the `map` and add the integer to the per-criterion score named in `applies_to` (`licence_and_cost`) before multiplying by that criterion's weight, clamped to `cap`.
 - Keep the per-criterion breakdown in `score_breakdown` so the writer can render a transparent score column.
 
-The scoring is a pure function of `(evidence, rubric)` — no LLM judgment. If you find yourself reasoning about whether a source is "good", you have made a mistake; recompute from the rubric.
+The scoring is a pure function of `(evidence, rubric)` — no LLM judgment. If you find yourself reasoning about whether a source is "good", you have made a mistake; recompute from the rubric. If a particular evidence field is missing from a source, treat its per-criterion score as the rubric's `when_missing` value (defaulting to 50 if unspecified).
 
 ### Step 7: Deduplicate, rank, build matrices
 

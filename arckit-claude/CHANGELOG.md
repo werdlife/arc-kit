@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.5] - 2026-05-06
+
+### Fixed
+
+- **Auto-allow hook now matches `${CLAUDE_PLUGIN_ROOT}` literal in commands.** The orchestrator's Bash command string contains `"${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs"` with the env var unexpanded — that's how Claude Code passes the LLM-emitted command to the PreToolUse hook. v4.16.2-4.16.4 only matched the resolved absolute path, so the env-var-literal form fell through to the user prompt. Hook now matches both forms.
+- **Auto-allow `Read` of `/tmp/datascout-handoff*.json` tempfiles** so the orchestrator can re-inspect the payload it just wrote without per-file prompts.
+- **Forbid the orchestrator from writing ad-hoc helper scripts.** The LLM was hallucinating `dsct-score.mjs`, `dsct-build-writer-input.mjs`, etc. mid-flow to handle scoring math and payload assembly — each file triggering its own permission prompt and not actually being needed (the only bundled executables are the validator and `scripts/bash/*.sh`). Added an explicit guardrail: do all data manipulation directly in conversation; the only executables this command runs are the ones already bundled with the plugin.
+
 ## [4.16.4] - 2026-05-06
 
 ### Fixed
