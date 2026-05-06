@@ -212,6 +212,12 @@ Build the writer's input:
 }
 ```
 
+Before dispatching, ensure the destination directory exists (the writer subagent has only `Read`/`Write`/`Edit` and cannot create directories):
+
+```bash
+mkdir -p "{project_path}/research"
+```
+
 Dispatch:
 
 ```js

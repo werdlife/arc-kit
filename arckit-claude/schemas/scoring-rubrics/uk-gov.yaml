@@ -66,6 +66,14 @@ scoring:
       NCSC-CAF-aligned-asserted: 25
     cap: 100
 
+  # data_residency_bonus is an additive adjustment, not a standalone
+  # weighted criterion. The orchestrator must:
+  #   1. Look up evidence.hosted_in_iso_country in the map; absent country = 0.
+  #   2. Add the resulting integer to the per-criterion score named in
+  #      applies_to BEFORE multiplying by that criterion's weight.
+  #   3. Clamp the adjusted per-criterion score to [0, cap].
+  # No new weight is introduced — weights still sum to 100 from the
+  # six-criterion table above.
   data_residency_bonus:
     method: residency
     field: evidence.hosted_in_iso_country
