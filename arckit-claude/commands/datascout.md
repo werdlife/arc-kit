@@ -1,6 +1,6 @@
 ---
 description: Discover external data sources (APIs, datasets, open data portals) to fulfil project requirements
-argument-hint: "<data need, e.g. 'real-time traffic data UK', 'company financials'>"
+argument-hint: "[project-number-or-name] <data need, e.g. '002', 'sovereign real-time traffic data'>"
 tags: [data, api, open-data, datasets, data-sources, discovery, uk-gov, data-integration]
 effort: max
 keep-coding-instructions: true

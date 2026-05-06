@@ -100,7 +100,13 @@ A DRAFT discovery artefact at `projects/{P}-{NAME}/research/ARC-{P}-DSCT-vN.N.md
 
 ### Step 1: Read project artefacts
 
-Find the project directory in `projects/`. Read:
+**Resolve the project directory in this order — do not skip ahead:**
+
+1. If the slash command's prompt contains an explicit `projects/{NNN}-{name}/` path (e.g. `projects/002-arckit-sovereign/`), use that path verbatim. The slash command has already resolved the user's argument; do not second-guess it.
+2. If the user's prompt contains a bare project number (e.g. `002`) or name fragment, glob `projects/{NUMBER}-*/` or `projects/*-*{NAME}*/` and use the unique match. If multiple match, ask the user to disambiguate before proceeding — do not default to "most recent".
+3. Otherwise (no project hint at all), glob `projects/[0-9][0-9][0-9]-*/`, exclude `000-global`, and pick the directory with the most-recently-modified file. Echo the chosen path back in your first message so the user can correct you if wrong.
+
+Once `{P}-{NAME}` is locked, read:
 
 **Mandatory:**
 
