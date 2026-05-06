@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "@antv/infographic": "^0.2.16"
+    "@antv/infographic": "^0.2.16",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^11.12.0"
