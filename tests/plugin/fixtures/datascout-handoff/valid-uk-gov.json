@@ -1,0 +1,28 @@
+{
+  "category": "company",
+  "source_type": "uk-gov",
+  "sources": [
+    {
+      "provider": "Companies House",
+      "name": "Companies House Public Data API",
+      "fetched_from_url": "https://developer.company-information.service.gov.uk/",
+      "fetched_at_iso": "2026-05-06T10:00:00Z",
+      "citation_id": "CH-API-1",
+      "confidence": "high",
+      "evidence": {
+        "hosted_in_iso_country": "GB",
+        "certifications": ["OGL-v3", "G-Cloud-listed"],
+        "licence_type": "OGL-v3",
+        "pricing_model": "free",
+        "contract_vehicles": ["G-Cloud-14"],
+        "rate_limit_per_minute": 600,
+        "refresh_cadence": "daily",
+        "auth_required": true,
+        "auth_method": "api-key",
+        "data_categories_supported": ["company-registry", "filings", "officers"]
+      }
+    }
+  ],
+  "unfetched_urls": [],
+  "errors": []
+}
