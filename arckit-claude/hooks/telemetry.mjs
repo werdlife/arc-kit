@@ -37,9 +37,14 @@ import { isDir, parseHookInput } from './hook-utils.mjs';
 const data = parseHookInput();
 const cwd = data.cwd || process.cwd();
 
-// Only collect telemetry inside an ArcKit project. No project = no .arckit
-// directory = nowhere to write the JSONL anyway.
-if (!isDir(join(cwd, '.arckit'))) process.exit(0);
+// Only collect telemetry inside an ArcKit project. Detect either:
+//   - .arckit/ — created by the CLI's `arckit init`
+//   - projects/ — created by plugin-only installs (test repos that
+//     never ran the CLI scaffolder)
+// If neither exists, this isn't an ArcKit project; exit silently. If
+// projects/ exists but .arckit/ doesn't, the .arckit/memory/ dir gets
+// created below when we go to write the JSONL.
+if (!isDir(join(cwd, '.arckit')) && !isDir(join(cwd, 'projects'))) process.exit(0);
 
 const event = data.hook_event_name || data.hookEventName || '';
 const tool = data.tool_name || '';

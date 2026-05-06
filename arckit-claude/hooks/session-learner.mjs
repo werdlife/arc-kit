@@ -30,8 +30,11 @@ const cwd = data.cwd || '.';
 const isFailure = !!(data.error || data.reason || data.hookEventName === 'StopFailure');
 const failureReason = data.error?.message || data.error?.type || data.reason || data.error || null;
 
-// Only proceed if we're in a project with .arckit directory
-if (!isDir(join(cwd, '.arckit'))) {
+// Only proceed if we're inside an ArcKit project. Detect either:
+//   - .arckit/ — CLI scaffolding from `arckit init`
+//   - projects/ — plugin-only install
+// .arckit/memory/ gets created on demand when we go to write.
+if (!isDir(join(cwd, '.arckit')) && !isDir(join(cwd, 'projects'))) {
   process.exit(0);
 }
 

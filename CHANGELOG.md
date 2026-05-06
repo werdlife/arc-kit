@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.6] - 2026-05-06
+
+### Fixed
+
+- **Telemetry now collects in plugin-only test repos.** `telemetry.mjs` and `session-learner.mjs` were silently exiting when `.arckit/` didn't exist — but plugin-only installs (test repos that use `extraKnownMarketplaces` and never run `arckit init`) only have `projects/`. Both hooks now treat either directory as a valid "ArcKit project" indicator and create `.arckit/memory/` on demand for the first telemetry write.
+
 ## [4.16.5] - 2026-05-06
 
 ### Fixed
