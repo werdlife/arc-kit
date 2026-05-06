@@ -100,11 +100,27 @@ Walk the requirements document and extract every requirement that implies extern
 - `INT-xxx` — third-party APIs / event streams
 - `NFR-xxx` — latency / availability / GDPR constraints on data feeds
 
-Group by category (geospatial, financial, company, demographics, weather, health, transport, energy, education, property, identity, crime, reference) using the trigger keywords from the existing datascout reference (see `${CLAUDE_PLUGIN_ROOT}/agents/READER-PATTERN.md` for the trigger map).
+**Category trigger-keyword map** — group requirements into these categories by matching the listed keywords:
+
+- **geospatial**: location, map, postcode, address, coordinates, geospatial, GPS, route, distance
+- **financial**: price, exchange rate, stock, financial, economic, inflation, GDP, interest rate
+- **company**: company, business, registration, director, filing, credit check, due diligence
+- **demographics**: population, census, demographics, age, household, deprivation
+- **weather**: weather, temperature, rainfall, flood, air quality, environment, climate
+- **health**: health, NHS, patient, clinical, prescription, hospital, GP
+- **transport**: transport, road, rail, bus, traffic, vehicle, DVLA, journey
+- **energy**: energy, electricity, gas, fuel, smart meter, tariff, consumption
+- **education**: school, university, education, qualification, student, Ofsted
+- **property**: property, land, house price, planning, building, EPC
+- **identity**: identity, verify, KYC, anti-money laundering, AML, passport, driving licence
+- **crime**: crime, police, court, offender, DBS, safeguarding
+- **reference**: postcode, currency, country, language, classification, taxonomy, SIC code
+
+A requirement may match multiple categories — record all relevant matches; the reader is dispatched per (category × source_type) pair, so duplicates across categories are normal.
 
 ### Step 4: Pre-flight checks
 
-- Validator script available: run `node -e "require('./arckit-claude/scripts/validate-handoff.mjs')" 2>&1 | head -1` (or simply ensure the file exists via `Read`).
+- Validator script available: ensure `${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` exists via `Read`. Do not try to load it via `node -e require(...)` — it is an ESM module.
 - ajv installed: run `node -e "require('ajv')" 2>/dev/null && echo OK || echo MISSING`. If `MISSING`, fall back to single-agent mode (see Edge Cases) and warn the user.
 
 ### Step 5: Dispatch reader subagent per (category × source_type)

@@ -50,7 +50,7 @@ The orchestrator passes you a JSON object in its Agent prompt with these fields:
 2. **Discover candidates.**
    - For `source_type: "uk-gov"`: WebFetch `https://www.api.gov.uk/`, run `WebSearch` on each query with `site:gov.uk` filter, follow links to department developer hubs.
    - For `source_type: "commercial"`: `WebSearch` on each query, fetch top vendor pages.
-   - For `source_type: "free"` / `"freemium"`: `WebSearch` on each query plus public-API list patterns.
+   - For `source_type: "free"`: `WebSearch` on each query plus public-API list patterns. (Sources with `pricing_model: "freemium"` are still emitted under `source_type: "free"` — pricing model is per-source, not a discovery bucket.)
    - For `source_type: "oss"`: use `mcp__govreposcrape__search_uk_gov_code` with the search queries; for statistical data, use `mcp__datacommons-mcp__search_indicators` with `places: ["country/GBR"]`.
    - For each pre-supplied `candidate_urls` entry, `WebFetch` it directly.
 
