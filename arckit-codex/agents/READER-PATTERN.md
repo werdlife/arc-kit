@@ -60,8 +60,10 @@ not stylistic preferences.
 
 ```text
 arckit-claude/
+├── commands/
+│   └── {name}.md                         # Orchestrator — runs in main thread,
+│                                         # holds Agent + Bash, dispatches reader and writer.
 ├── agents/
-│   ├── arckit-{name}.md                  # Orchestrator (the user-facing agent)
 │   ├── arckit-{name}-reader.md           # Reader subagent (subagent: true)
 │   ├── arckit-{name}-writer.md           # Writer subagent (subagent: true)
 │   └── READER-PATTERN.md                 # This document
@@ -73,6 +75,8 @@ arckit-claude/
 └── scripts/
     └── validate-handoff.mjs              # Shared pure-Node JSON Schema validator (zero npm deps)
 ```
+
+**Why the orchestrator lives in the slash command, not an agent file:** Claude Code plugin subagents cannot themselves dispatch further subagents (per the official docs: *"Subagents cannot spawn other subagents"*). Nested `Agent` dispatch is a Managed Agents API feature, not a plugin runtime feature. So the orchestrator role — which must call `Agent` to dispatch reader and writer — has to live where `Agent` is available, which is the main thread (i.e. the slash command's body). Reader and writer remain as proper subagents under `agents/`. Same security properties as the financial-services Cowork pattern; different file location dictated by the Claude Code plugin runtime.
 
 The `subagent: true` frontmatter field on reader and writer agents:
 
@@ -103,7 +107,7 @@ of the other research agents, follow this sequence:
 2. **Pick or write a rubric.** Re-use `generic.yaml` if the agent's scoring criteria don't need overlay-specific tuning; otherwise write `{agent}-{rubric}.yaml`.
 3. **Write the reader.** Tools allowlist: `Read, Glob, Grep, WebSearch, WebFetch, TodoWrite` plus relevant MCP tools. No `Write`, no `Edit`, no `Bash`, no `Agent`. Frontmatter `subagent: true`.
 4. **Write the writer.** Tools allowlist: `Read, Write, Edit`. Nothing else. Frontmatter `subagent: true`.
-5. **Rewrite the orchestrator.** Tools allowlist: `Read, Glob, Grep, Bash, Agent, TodoWrite`. Process: read project artefacts → dispatch reader per logical bucket → validate → score deterministically → dispatch writer.
+5. **Rewrite the slash command as the orchestrator.** Move all dispatch + validation + scoring logic into `arckit-claude/commands/{name}.md`. The slash command body runs in the main thread, where `Agent` is available. Process: read project artefacts → dispatch reader per logical bucket → validate via `node validate-handoff.mjs` → score deterministically from the rubric → dispatch writer. Do NOT put this logic in an `arckit-claude/agents/arckit-{name}.md` file; subagents cannot dispatch further subagents in Claude Code plugins.
 6. **Add fixtures and a test file** under `tests/plugin/fixtures/{name}-handoff/` covering at least 2 valid + 4 reject cases (extra-property, oversized, off-allowlist, injection).
 7. **Wire the test into CI** by adding a step to `.github/workflows/lint-markdown.yml`.
 

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.3] - 2026-05-06
+
+### Fixed
+
+- **Datascout orchestrator moved from agent file to slash command.** Earlier 4.16.x releases placed orchestration in a subagent that dispatched reader/writer subagents — but Claude Code plugins forbid nested subagent dispatch (*"Subagents cannot spawn other subagents"*), so users hit *"Agent tool unavailable"* errors. Resolution: orchestration moved to `arckit-claude/commands/datascout.md` (the slash command runs in the main thread where `Agent` works). Reader and writer subagents and all security allowlists unchanged. `arckit-claude/agents/arckit-datascout.md` deleted.
+
 ## [4.16.2] - 2026-05-06
 
 ### Added

@@ -41,10 +41,6 @@ config_file = "agents/arckit-aws-research.toml"
 description = "Use this agent when the user needs Azure-specific technology research using the Microsoft Learn MCP server to match project requirements to Azure services, architecture patterns, Well-Architected guidance, and Security Benchmark controls. Examples:"
 config_file = "agents/arckit-azure-research.toml"
 
-[agents.arckit-datascout]
-description = "Use this agent when the user needs to discover external data sources — APIs, datasets, open data portals, and commercial data providers — to fulfil project requirements. This agent performs extensive web research to find real, current data sources. Examples:"
-config_file = "agents/arckit-datascout.toml"
-
 [agents.arckit-framework]
 description = "Use this agent when the user wants to transform existing project artifacts into a structured framework with phased organization, an overview document, and an executive guide. This agent reads all project artifacts and synthesises them into a coherent framework structure. Examples:"
 config_file = "agents/arckit-framework.toml"

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.3] - 2026-05-06
+
+### Fixed
+
+- **Move datascout orchestrator from agent file to slash command (architecture fix).** v4.16.0–v4.16.2 placed orchestration logic in `arckit-claude/agents/arckit-datascout.md` (a subagent), which dispatched `arckit-datascout-reader` and `arckit-datascout-writer` via the `Agent` tool. **Claude Code plugins do not support nested subagent dispatch** — per the official agents documentation, *"Subagents cannot spawn other subagents"*. Users hit *"Agent tool unavailable"* errors when the orchestrator subagent tried to dispatch reader/writer. The financial-services reference plugins use the Managed Agents API for nested dispatch; that runtime feature isn't available in Claude Code plugins.
+- **Resolution**: orchestration moved to `arckit-claude/commands/datascout.md` (the slash command), which executes in the main thread where `Agent` is always available. Reader and writer subagents unchanged. Same security properties (reader has no `Write`/`Edit`/`Bash`/`Agent`; writer has no web/MCP; orchestrator has `Agent` + `Bash` for the validator); different file location dictated by the runtime.
+- `arckit-claude/agents/arckit-datascout.md` deleted. The orchestrator now lives in the slash command body only.
+- `arckit-claude/agents/READER-PATTERN.md` updated: file layout shows orchestrator-as-slash-command; "Adapting this pattern" step 5 now says *rewrite the slash command*, not *rewrite the orchestrator agent*.
+
+### Known limitation
+
+- **Non-Claude runtimes** (Codex, Gemini, OpenCode, Copilot) do not support subagent dispatch at all. The new datascout slash command's instructions to dispatch reader/writer subagents will not work in those runtimes. Non-Claude support for the three-tier flow is deferred — those users continue with the existing single-agent flow until per-runtime conditional logic is added (out of scope for #442 item 1).
+
 ## [4.16.2] - 2026-05-06
 
 ### Added
