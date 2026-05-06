@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.4] - 2026-05-06
+
+### Fixed
+
+- **Auto-allow hook for plugin-internal Read/Bash now actually fires.** v4.16.2 registered `allow-plugin-internals.mjs` under `PermissionRequest`, but per the Claude Code hooks docs that event only fires for *some* tools and *only when a permission dialog is about to show*. For built-in Read/Bash, blanket auto-allow requires a `PreToolUse` hook returning `permissionDecision: "allow"` inside `hookSpecificOutput`. Re-registered the hook under `PreToolUse` and updated its output JSON to the documented `hookSpecificOutput` shape. Smoke-tested with six cases (plugin Read/Bash allowed; project Read, mkdir, arbitrary rm, project Write all pass-through to the normal flow). Hook auto-allow does NOT override user/project deny rules — those still take precedence.
+
 ## [4.16.3] - 2026-05-06
 
 ### Fixed

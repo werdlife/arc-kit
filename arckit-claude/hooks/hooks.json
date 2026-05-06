@@ -141,6 +141,16 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "Read|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/allow-plugin-internals.mjs",
+            "timeout": 5
+          }
+        ]
+      },
+      {
         "matcher": "Write",
         "hooks": [
           {
@@ -232,16 +242,6 @@
           {
             "type": "command",
             "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/allow-mcp-tools.mjs",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Read|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/allow-plugin-internals.mjs",
             "timeout": 5
           }
         ]

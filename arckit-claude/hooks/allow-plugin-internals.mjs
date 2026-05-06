@@ -18,10 +18,20 @@
  * Write of project artefacts, etc.) falls through to the normal
  * permission dialog.
  *
- * Hook Type: PermissionRequest
+ * Hook Type: PreToolUse
  * Input (stdin):  JSON { tool_name, tool_input: {...}, ... }
- * Output (stdout): {"decision":"allow","reason":"..."} when matched
- * Exit codes:      0 = allow (matched), 1 = pass-through (not matched)
+ * Output (stdout):
+ *   On match (allow):
+ *     {"hookSpecificOutput": {
+ *       "hookEventName": "PreToolUse",
+ *       "permissionDecision": "allow",
+ *       "permissionDecisionReason": "..."
+ *     }}
+ *   On no-match: silent pass-through (exit 0, no JSON).
+ *
+ * Exit code 0 always — pass-through is a non-decision, not a failure.
+ * Hook auto-allow does NOT override user/project deny rules: per the
+ * Claude Code docs, deny rules take precedence over plugin hook allows.
  */
 
 import { readFileSync } from 'node:fs';
@@ -40,15 +50,15 @@ function main() {
   try {
     raw = readFileSync(0, 'utf8');
   } catch {
-    process.exit(1);
+    process.exit(0); // silent pass-through
   }
-  if (!raw || !raw.trim()) process.exit(1);
+  if (!raw || !raw.trim()) process.exit(0);
 
   let data;
   try {
     data = JSON.parse(raw);
   } catch {
-    process.exit(1);
+    process.exit(0);
   }
 
   const toolName = data.tool_name || '';
@@ -68,7 +78,9 @@ function main() {
     }
   }
 
-  process.exit(1);
+  // No match — silent pass-through. Claude Code falls back to the
+  // normal permission flow (user prompt, deny rules, etc.).
+  process.exit(0);
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────
@@ -126,6 +138,12 @@ function shortPath(p) {
 }
 
 function allow(reason) {
-  console.log(JSON.stringify({ decision: 'allow', reason }));
+  console.log(JSON.stringify({
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'allow',
+      permissionDecisionReason: reason,
+    },
+  }));
   process.exit(0);
 }

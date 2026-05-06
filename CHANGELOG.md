@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.4] - 2026-05-06
+
+### Fixed
+
+- **Auto-allow hook for plugin-internal Read/Bash now actually fires.** v4.16.2 registered `allow-plugin-internals.mjs` under `PermissionRequest`, but that event only fires for some tools and only when a permission dialog is about to show. Switched to `PreToolUse` with `permissionDecision: "allow"` in `hookSpecificOutput` — the documented pattern for blanket auto-allow on built-in Read/Bash. The datascout slash command's plugin-internal `Read`s and `Bash` invocations of bundled scripts now auto-approve.
+
 ## [4.16.3] - 2026-05-06
 
 ### Fixed
