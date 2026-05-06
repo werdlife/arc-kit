@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.2] - 2026-05-06
+
+### Added
+
+- `arckit-claude/hooks/allow-plugin-internals.mjs` — `PermissionRequest` hook that auto-approves plugin-internal `Read` (any file under `${CLAUDE_PLUGIN_ROOT}/`) and `Bash` (invocations of `${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` and the existing `scripts/bash/*.sh` helpers — `create-project.sh`, `generate-document-id.sh`, etc.). Stops the orchestrator and other agents from prompting users for approval each session when reading their own bundled schemas, templates, and references, or running their own bundled validator/helper scripts. Anything outside the plugin still falls through to the normal permission dialog.
+
+### Fixed
+
+- The `arckit-datascout` orchestrator's bundled-script invocations (`validate-handoff.mjs`, `create-project.sh`, etc.) and bundled-file reads (`schemas/datascout-handoff.schema.json`, `schemas/scoring-rubrics/*.yaml`, `agents/READER-PATTERN.md`) no longer trigger a per-session permission prompt now that the auto-allow hook is wired in. Same benefit accrues to every other ArcKit command that reads plugin-bundled templates or runs the standard helper scripts.
+
 ## [4.16.1] - 2026-05-06
 
 ### Fixed

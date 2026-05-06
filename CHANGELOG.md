@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.2] - 2026-05-06
+
+### Added
+
+- `arckit-claude/hooks/allow-plugin-internals.mjs` — `PermissionRequest` hook that auto-approves the plugin's own internal Read/Bash patterns (any file under `${CLAUDE_PLUGIN_ROOT}/`, plus invocations of the bundled validator and `scripts/bash/*.sh` helpers). Stops the per-session permission prompts that the datascout orchestrator (and any future helper-script-using command) was triggering; non-plugin Read/Bash still falls through to the normal prompt.
+
 ## [4.16.1] - 2026-05-06
 
 ### Fixed
