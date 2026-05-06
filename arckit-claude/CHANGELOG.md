@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.0] - 2026-05-06
+
+### Security
+
+- **datascout reader/orchestrator/writer split (#442 item 1).** `arckit-datascout` is now a three-tier agent: a reader subagent fetches external content with allowlist `WebSearch/WebFetch/MCP/Read` only (no `Write`/`Bash`/`Agent`), an orchestrator validates each reader's output against a JSON Schema and scores deterministically using a YAML rubric, and a writer subagent holds the only `Write` tool. Falls back to legacy single-agent mode when ajv is not installed.
+
+### Added
+
+- `arckit-claude/agents/arckit-datascout-reader.md` — reader subagent (untrusted-input tier).
+- `arckit-claude/agents/arckit-datascout-writer.md` — writer subagent (write-tool isolation tier).
+- `arckit-claude/agents/READER-PATTERN.md` — reference doc for applying the three-tier split to other research agents.
+- `arckit-claude/schemas/datascout-handoff.schema.json` — JSON Schema 2020-12 contract between reader and orchestrator.
+- `arckit-claude/schemas/scoring-rubrics/{generic,uk-gov}.yaml` — deterministic scoring rubrics consumed by the orchestrator.
+- `arckit-claude/scripts/validate-handoff.mjs` — shared Node + ajv validator wrapper.
+- New runtime deps: `ajv` ^8, `ajv-formats` ^3.
+
+### Changed
+
+- `arckit-datascout` rewritten as orchestrator: removes `WebSearch`/`WebFetch`/`Write`/`Edit` from tools allowlist; gains `Agent` (to dispatch reader and writer) and keeps `Bash` for the validator + project-helper scripts.
+- `scripts/converter.py` filters agents with `subagent: true` frontmatter from non-Claude targets (Codex/Gemini/OpenCode/Copilot do not support subagent dispatch).
+
 ## [4.15.2] - 2026-05-05
 
 Documentation-only patch fixing a citation-traceability gap that only surfaced in research-agent output.

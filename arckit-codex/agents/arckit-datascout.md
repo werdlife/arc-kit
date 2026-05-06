@@ -137,11 +137,27 @@ Walk the requirements document and extract every requirement that implies extern
 - `INT-xxx` — third-party APIs / event streams
 - `NFR-xxx` — latency / availability / GDPR constraints on data feeds
 
-Group by category (geospatial, financial, company, demographics, weather, health, transport, energy, education, property, identity, crime, reference) using the trigger keywords from the existing datascout reference (see `${CLAUDE_PLUGIN_ROOT}/agents/READER-PATTERN.md` for the trigger map).
+**Category trigger-keyword map** — group requirements into these categories by matching the listed keywords:
+
+- **geospatial**: location, map, postcode, address, coordinates, geospatial, GPS, route, distance
+- **financial**: price, exchange rate, stock, financial, economic, inflation, GDP, interest rate
+- **company**: company, business, registration, director, filing, credit check, due diligence
+- **demographics**: population, census, demographics, age, household, deprivation
+- **weather**: weather, temperature, rainfall, flood, air quality, environment, climate
+- **health**: health, NHS, patient, clinical, prescription, hospital, GP
+- **transport**: transport, road, rail, bus, traffic, vehicle, DVLA, journey
+- **energy**: energy, electricity, gas, fuel, smart meter, tariff, consumption
+- **education**: school, university, education, qualification, student, Ofsted
+- **property**: property, land, house price, planning, building, EPC
+- **identity**: identity, verify, KYC, anti-money laundering, AML, passport, driving licence
+- **crime**: crime, police, court, offender, DBS, safeguarding
+- **reference**: postcode, currency, country, language, classification, taxonomy, SIC code
+
+A requirement may match multiple categories — record all relevant matches; the reader is dispatched per (category × source_type) pair, so duplicates across categories are normal.
 
 ### Step 4: Pre-flight checks
 
-- Validator script available: run `node -e "require('./arckit-claude/scripts/validate-handoff.mjs')" 2>&1 | head -1` (or simply ensure the file exists via `Read`).
+- Validator script available: ensure `${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` exists via `Read`. Do not try to load it via `node -e require(...)` — it is an ESM module.
 - ajv installed: run `node -e "require('ajv')" 2>/dev/null && echo OK || echo MISSING`. If `MISSING`, fall back to single-agent mode (see Edge Cases) and warn the user.
 
 ### Step 5: Dispatch reader subagent per (category × source_type)
@@ -162,7 +178,7 @@ For each (category, source_type) pair where the project has at least one require
 
 2. Dispatch the reader using the `Agent` tool:
 
-```
+```js
 Agent({
   description: "datascout reader: {category}/{source_type}",
   subagent_type: "arckit-datascout-reader",
@@ -208,6 +224,7 @@ The scoring is a pure function of `(evidence, rubric)` — no LLM judgment. If y
 ### Step 8: Detect version
 
 Glob `projects/{project-dir}/research/ARC-{PROJECT_ID}-DSCT-*-v*.md`. If none, version = `1.0`. If existing, read the highest-version file to compute the increment:
+
 - Minor (1.0 → 1.1) if scope unchanged (refresh, additions within existing categories)
 - Major (1.0 → 2.0) if categories added/removed or fundamentally different sources
 
@@ -232,9 +249,15 @@ Build the writer's input:
 }
 ```
 
+Before dispatching, ensure the destination directory exists (the writer subagent has only `Read`/`Write`/`Edit` and cannot create directories):
+
+```bash
+mkdir -p "{project_path}/research"
+```
+
 Dispatch:
 
-```
+```js
 Agent({
   description: "datascout writer: render artefact",
   subagent_type: "arckit-datascout-writer",

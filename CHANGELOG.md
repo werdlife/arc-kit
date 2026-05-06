@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.0] - 2026-05-06
+
 ### Security
 
 - **datascout reader/orchestrator/writer split (#442 item 1).** `arckit-datascout` is now a three-tier agent: a reader subagent fetches external content with allowlist `WebSearch/WebFetch/MCP/Read` only (no `Write`/`Bash`/`Agent`), an orchestrator validates each reader's output against a JSON Schema and scores deterministically using a YAML rubric, and a writer subagent holds the only `Write` tool. Falls back to legacy single-agent mode when ajv is not installed. New files: `arckit-claude/agents/arckit-datascout-{reader,writer}.md`, `arckit-claude/agents/READER-PATTERN.md`, `arckit-claude/schemas/datascout-handoff.schema.json`, `arckit-claude/schemas/scoring-rubrics/{generic,uk-gov}.yaml`, `arckit-claude/scripts/validate-handoff.mjs`. New deps: `ajv` ^8, `ajv-formats` ^3.

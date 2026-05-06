@@ -58,7 +58,7 @@ not stylistic preferences.
 
 ## File layout convention
 
-```
+```text
 arckit-claude/
 ├── agents/
 │   ├── arckit-{name}.md                  # Orchestrator (the user-facing agent)
