@@ -50,6 +50,8 @@ def build_agent_map(agents_dir):
             name = filename.replace("arckit-", "", 1).replace(".md", "")
             command_filename = f"{name}.md"
             agent_path = os.path.join(agents_dir, filename)
+            if is_subagent_file(agent_path):
+                continue
             with open(agent_path, "r", encoding="utf-8") as f:
                 agent_content = f.read()
             agent_prompt = extract_agent_prompt(agent_content)
@@ -79,6 +81,31 @@ def extract_agent_prompt(content):
         if len(parts) > 2:
             return parts[2].strip()
     return content
+
+
+def is_subagent_file(agent_path):
+    """True if the agent file's frontmatter has `subagent: true`.
+
+    Subagents are reader/writer subagents dispatched by an orchestrator
+    via the Claude Code Agent tool. They are Claude-only — non-Claude
+    runtimes (Codex, Gemini, OpenCode, Copilot) do not support subagent
+    dispatch, so the converter filters them out of those targets.
+    """
+    try:
+        with open(agent_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError:
+        return False
+    if not content.startswith("---"):
+        return False
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        return False
+    try:
+        fm = yaml.safe_load(parts[1]) or {}
+    except yaml.YAMLError:
+        return False
+    return bool(fm.get("subagent"))
 
 
 def copy_agent_stripped(src_path, dest_path):
@@ -641,6 +668,8 @@ def generate_codex_config_toml(mcp_json_path, agents_dir, output_path):
 
             for filename in agent_files:
                 agent_path = os.path.join(agents_dir, filename)
+                if is_subagent_file(agent_path):
+                    continue
                 with open(agent_path, "r", encoding="utf-8") as f:
                     content = f.read()
                 frontmatter, _ = extract_frontmatter_and_prompt(content)
@@ -674,6 +703,8 @@ def generate_agent_toml_files(agents_dir, output_dir, path_prefix=".arckit"):
             continue
 
         agent_path = os.path.join(agents_dir, filename)
+        if is_subagent_file(agent_path):
+            continue
         with open(agent_path, "r", encoding="utf-8") as f:
             content = f.read()
 
@@ -786,6 +817,8 @@ def generate_gemini_agents(agents_dir, output_dir):
             continue
 
         agent_path = os.path.join(agents_dir, filename)
+        if is_subagent_file(agent_path):
+            continue
         with open(agent_path, "r", encoding="utf-8") as f:
             content = f.read()
 
@@ -959,6 +992,8 @@ def generate_copilot_agents(agents_dir, output_dir):
             continue
 
         agent_path = os.path.join(agents_dir, filename)
+        if is_subagent_file(agent_path):
+            continue
         with open(agent_path, "r", encoding="utf-8") as f:
             content = f.read()
 
@@ -1094,6 +1129,8 @@ if __name__ == "__main__":
                 for filename in sorted(os.listdir(agents_dir)):
                     if filename.endswith(".md"):
                         src_agent = os.path.join(agents_dir, filename)
+                        if is_subagent_file(src_agent):
+                            continue
                         copy_agent_stripped(
                             src_agent,
                             os.path.join(local_agents_dir, filename),
