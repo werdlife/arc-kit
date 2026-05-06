@@ -125,7 +125,7 @@ For each (category, source_type) pair where the project has at least one require
 
 2. Dispatch the reader using the `Agent` tool:
 
-```
+```js
 Agent({
   description: "datascout reader: {category}/{source_type}",
   subagent_type: "arckit-datascout-reader",
@@ -171,6 +171,7 @@ The scoring is a pure function of `(evidence, rubric)` — no LLM judgment. If y
 ### Step 8: Detect version
 
 Glob `projects/{project-dir}/research/ARC-{PROJECT_ID}-DSCT-*-v*.md`. If none, version = `1.0`. If existing, read the highest-version file to compute the increment:
+
 - Minor (1.0 → 1.1) if scope unchanged (refresh, additions within existing categories)
 - Major (1.0 → 2.0) if categories added/removed or fundamentally different sources
 
@@ -197,7 +198,7 @@ Build the writer's input:
 
 Dispatch:
 
-```
+```js
 Agent({
   description: "datascout writer: render artefact",
   subagent_type: "arckit-datascout-writer",
