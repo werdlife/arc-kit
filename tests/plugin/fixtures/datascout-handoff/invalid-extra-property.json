@@ -1,0 +1,14 @@
+{
+  "category": "company",
+  "source_type": "uk-gov",
+  "sources": [
+    {
+      "provider": "Companies House",
+      "name": "Companies House Public Data API",
+      "fetched_from_url": "https://developer.company-information.service.gov.uk/",
+      "evidence": { "licence_type": "OGL-v3" },
+      "should_be_rejected": "this property is not in the schema"
+    }
+  ],
+  "errors": []
+}

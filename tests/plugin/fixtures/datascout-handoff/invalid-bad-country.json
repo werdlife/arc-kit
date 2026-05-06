@@ -1,0 +1,15 @@
+{
+  "category": "company",
+  "source_type": "uk-gov",
+  "sources": [
+    {
+      "provider": "Companies House",
+      "name": "Companies House Public Data API",
+      "fetched_from_url": "https://developer.company-information.service.gov.uk/",
+      "evidence": {
+        "hosted_in_iso_country": "United Kingdom"
+      }
+    }
+  ],
+  "errors": []
+}

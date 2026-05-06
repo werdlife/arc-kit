@@ -1,0 +1,28 @@
+{
+  "category": "financial",
+  "source_type": "commercial",
+  "sources": [
+    {
+      "provider": "Bloomberg",
+      "name": "Bloomberg Market Data API",
+      "fetched_from_url": "https://www.bloomberg.com/professional/product/market-data/",
+      "fetched_at_iso": "2026-05-06T10:05:00Z",
+      "citation_id": "BB-API-1",
+      "confidence": "medium",
+      "evidence": {
+        "hosted_in_iso_country": "US",
+        "certifications": ["ISO27001", "SOC2-Type2"],
+        "licence_type": "Commercial",
+        "pricing_model": "enterprise-quote",
+        "contract_vehicles": ["Direct"],
+        "rate_limit_per_minute": 5000,
+        "refresh_cadence": "real-time",
+        "auth_required": true,
+        "auth_method": "oauth2",
+        "data_categories_supported": ["equities", "bonds", "fx", "commodities"]
+      }
+    }
+  ],
+  "unfetched_urls": [],
+  "errors": []
+}

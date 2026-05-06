@@ -1,0 +1,13 @@
+{
+  "category": "company",
+  "source_type": "uk-gov",
+  "sources": [
+    {
+      "provider": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "name": "Padded provider exceeding maxLength 128",
+      "fetched_from_url": "https://example.com/",
+      "evidence": {}
+    }
+  ],
+  "errors": []
+}

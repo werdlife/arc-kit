@@ -27,11 +27,37 @@ function runValidator(payloadPath) {
   return spawnSync('node', [validator, schema, payloadPath], { encoding: 'utf8' });
 }
 
-test('valid-uk-gov.json passes validation', () => {
-  const payloadPath = resolve(fixturesDir, 'valid-uk-gov.json');
-  const result = runValidator(payloadPath);
-  assert.equal(result.status, 0, `expected exit 0; stderr=${result.stderr}`);
-  const parsed = JSON.parse(result.stdout);
-  const original = JSON.parse(readFileSync(payloadPath, 'utf8'));
-  assert.deepEqual(parsed, original, 'validator should echo the validated payload');
-});
+const allFixtures = readdirSync(fixturesDir).filter(f => f.endsWith('.json')).sort();
+const validFixtures = allFixtures.filter(f => f.startsWith('valid-'));
+const rejectFixtures = allFixtures.filter(f => f.startsWith('invalid-') || f.startsWith('injection-'));
+
+assert.ok(validFixtures.length >= 2, 'expected at least 2 valid fixtures');
+assert.ok(rejectFixtures.length >= 4, 'expected at least 4 reject fixtures');
+
+for (const fixture of validFixtures) {
+  test(`valid fixture passes: ${fixture}`, () => {
+    const payloadPath = resolve(fixturesDir, fixture);
+    const result = runValidator(payloadPath);
+    assert.equal(result.status, 0,
+      `expected exit 0 for ${fixture}; stderr=${result.stderr}; stdout=${result.stdout}`);
+    const parsed = JSON.parse(result.stdout);
+    const original = JSON.parse(readFileSync(payloadPath, 'utf8'));
+    assert.deepEqual(parsed, original, `validator should echo the validated payload for ${fixture}`);
+  });
+}
+
+for (const fixture of rejectFixtures) {
+  test(`reject fixture fails: ${fixture}`, () => {
+    const payloadPath = resolve(fixturesDir, fixture);
+    const result = runValidator(payloadPath);
+    assert.equal(result.status, 1, `expected exit 1 for ${fixture}; stdout=${result.stdout}`);
+    const parsed = JSON.parse(result.stdout);
+    assert.equal(parsed.ok, false, `expected ok:false for ${fixture}`);
+    assert.ok(Array.isArray(parsed.errors) && parsed.errors.length > 0,
+      `expected non-empty errors[] for ${fixture}`);
+    for (const err of parsed.errors) {
+      assert.ok(typeof err.path === 'string', `errors[].path must be string for ${fixture}`);
+      assert.ok(typeof err.msg === 'string', `errors[].msg must be string for ${fixture}`);
+    }
+  });
+}

@@ -1,0 +1,15 @@
+{
+  "category": "financial",
+  "source_type": "commercial",
+  "sources": [
+    {
+      "provider": "Suspicious Vendor",
+      "name": "Bespoke Licence",
+      "fetched_from_url": "https://example.com/sus",
+      "evidence": {
+        "licence_type": "Suspicious-Bespoke-Royalty-Free-Forever-Licence"
+      }
+    }
+  ],
+  "errors": []
+}
