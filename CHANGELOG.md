@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.1] - 2026-05-06
+
+### Fixed
+
+- **datascout: validator no longer requires `npm install` in plugin cache.** Rewrote `validate-handoff.mjs` as a pure-Node JSON Schema 2020-12 partial validator with zero npm dependencies, and removed `ajv` / `ajv-formats` from runtime deps. v4.16.0 had them in `package.json` but the plugin marketplace doesn't run `npm install`, so users hit `Error: Cannot find module 'ajv'` on first `/arckit:datascout` run. Also drops the orchestrator's "ajv-missing → legacy single-agent fallback" path, which had been surfacing a confusing secondary error about `.arckit/templates/`.
+
 ## [4.16.0] - 2026-05-06
 
 ### Security

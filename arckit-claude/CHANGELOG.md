@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.16.1] - 2026-05-06
+
+### Fixed
+
+- **datascout: validator no longer requires `npm install` in plugin cache.** v4.16.0 declared `ajv` and `ajv-formats` as runtime deps in `package.json`, but the Claude Code plugin marketplace clones the repo without running `npm install`, so end users hit `Error: Cannot find module 'ajv'` on first `/arckit:datascout` run. The orchestrator's "ajv-missing → legacy fallback" path then read the slash command's user-override template hint and tried `.arckit/templates/datascout-template.md`, which doesn't exist in a pure-plugin install — surfacing as a second misleading error.
+- `arckit-claude/scripts/validate-handoff.mjs` rewritten as a pure-Node JSON Schema 2020-12 partial validator (zero npm dependencies). Supports the keywords actually used in `datascout-handoff.schema.json`: `type`, `required`, `properties`, `additionalProperties: false`, `items`, `enum`, `pattern`, `format: uri`/`date-time`, `maxLength`/`minLength`, `maxItems`/`minItems`, `minimum`/`maximum`, `$ref` (to `#/$defs/<name>`).
+- Orchestrator pre-flight simplified: drops the `node -e "require('ajv')"` probe and the legacy-single-agent-fallback edge case. The validator's mere presence is sufficient.
+- All 7 fixture tests still pass against the pure-Node validator.
+
+### Removed
+
+- Runtime deps `ajv` ^8 and `ajv-formats` ^3 from `package.json` (introduced briefly in v4.16.0).
+
 ## [4.16.0] - 2026-05-06
 
 ### Security

@@ -71,7 +71,7 @@ arckit-claude/
 │       ├── generic.yaml                  # Default rubric
 │       └── uk-gov.yaml                   # UK-Gov-tuned rubric
 └── scripts/
-    └── validate-handoff.mjs              # Shared Node + ajv validator
+    └── validate-handoff.mjs              # Shared pure-Node JSON Schema validator (zero npm deps)
 ```
 
 The `subagent: true` frontmatter field on reader and writer agents:

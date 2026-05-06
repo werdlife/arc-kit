@@ -161,10 +161,9 @@ Walk the requirements document and extract every requirement that implies extern
 
 A requirement may match multiple categories — record all relevant matches; the reader is dispatched per (category × source_type) pair, so duplicates across categories are normal.
 
-### Step 4: Pre-flight checks
+### Step 4: Pre-flight check
 
-- Validator script available: ensure `${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` exists via `Read`. Do not try to load it via `node -e require(...)` — it is an ESM module.
-- ajv installed: run `node -e "require('ajv')" 2>/dev/null && echo OK || echo MISSING`. If `MISSING`, fall back to single-agent mode (see Edge Cases) and warn the user.
+- Validator script available: ensure `${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` exists via `Read`. Do not try to load it via `node -e require(...)` — it is an ESM module. The validator is pure Node with no npm dependencies, so its mere presence is sufficient; nothing else to install or check.
 
 ### Step 5: Dispatch reader subagent per (category × source_type)
 
@@ -289,7 +288,7 @@ Return ONLY a concise summary to the slash command caller:
 ## Edge Cases
 
 - **No requirements**: stop, tell user to run `/arckit:requirements`.
-- **ajv not installed**: fall back to legacy single-agent mode — perform discovery, scoring, and writing in this agent's own context. Log a warning to the user: *"Reader/writer subagent split unavailable (ajv not installed; run `npm install` at repo root); proceeding in legacy single-agent mode for this run."*
+- **Validator script missing**: stop and tell the user the plugin install is incomplete (`${CLAUDE_PLUGIN_ROOT}/scripts/validate-handoff.mjs` should be present in any released plugin version ≥ 4.16.0). Do not silently fall back; the structural isolation guarantee depends on validation actually running.
 - **Reader returns 0 sources for a (category, source_type)**: record the reader's `errors[]` in the gap analysis as "no candidates found for {category}/{source_type}" — this is not a workflow failure.
 - **Writer fails to write**: surfaces normally as an Agent tool error; return the error to the caller.
 - **Reader returns text that is not JSON**: re-prompt once; second failure → mark category as a gap.
