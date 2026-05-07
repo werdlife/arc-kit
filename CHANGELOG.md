@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.2] - 2026-05-07
+
+### Added
+
+- **`inject-agent-context.mjs` PreToolUse hook** — closes the gap where ArcKit subagents dispatched via the `Agent` tool ran without project context. UserPromptSubmit hooks fire only on real user prompts, so any orchestrator-style subagent whose body assumed "the ArcKit Project Context hook has already detected all projects, artifacts" silently lost that context when invoked indirectly. The new PreToolUse hook (matcher: `Agent`) builds the same context block as `arckit-context.mjs` and prepends it to `tool_input.prompt` via `updatedInput` (the only PreToolUse return-field that propagates into the dispatched subagent's context — `additionalContext` stays in the parent thread). Scoped to `arckit-*` subagent_types; skips reader/writer subagents (their schema-validated JSON payloads must stay clean) and skips general-purpose / Plan / Explore / claude-code-guide / etc. (no spam).
+- **`project-context-builder.mjs`** — extracted the project-scanning logic from `arckit-context.mjs` into a shared module so both the UserPromptSubmit hook and the new PreToolUse hook produce identical context blocks.
+
 ## [4.18.1] - 2026-05-07
 
 ### Fixed

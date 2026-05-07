@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.2] - 2026-05-07
+
+### Added
+
+- **PreToolUse hook on `Agent` tool dispatches injects ArcKit project context.** UserPromptSubmit hooks don't fire on Skill/Agent dispatch — subagents run in isolated contexts and inherit only the explicit `prompt` field passed in. Any orchestrator-style ArcKit subagent that assumed the project-context block was already in scope (because the slash command body says so) lost that context when invoked indirectly. The new `inject-agent-context.mjs` hook (matcher: `Agent`) prepends the same context block to `tool_input.prompt` via `updatedInput`, scoped to `arckit-*` subagent_types and skipping reader/writer tiers. Project-scanning logic lives in a new shared `project-context-builder.mjs` so both hooks produce identical output.
+
 ## [4.18.1] - 2026-05-07
 
 ### Fixed
