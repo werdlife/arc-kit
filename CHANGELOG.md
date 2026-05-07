@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.19.0] - 2026-05-07
+
+### Added
+
+- **`/arckit:gov-reuse` reader/orchestrator/writer split** (Claude Code plugin only — non-Claude extensions remain at the prior single-tier shape until a follow-up release). Third command after `/arckit:datascout` (v4.16.0) and `/arckit:grants` (v4.18.0) to adopt the three-tier subagent pattern. Reader (`arckit-gov-reuse-reader`, `WebFetch` + `mcp__govreposcrape__search_uk_gov_code` only — no Write/Edit/Bash/Agent/WebSearch) searches govreposcrape per capability and fetches GitHub repo evidence. Orchestrator validates each reader payload via `validate-handoff.mjs`, scores deterministically from the YAML rubric, assigns a reuse strategy band (`Fork` / `Library` / `Reference` / `None`) by score thresholds (`>= 80 / 60-79 / 40-59 / < 40`) with licence overrides for AGPL/Proprietary/Unlicensed → forced `None`. Writer (`arckit-gov-reuse-writer`, `Read`/`Write`/`Edit` only) renders the GOVR artefact and spawns one tech-note per Fork or Library candidate.
+- **Gov-reuse handoff schema** (`arckit-claude/schemas/gov-reuse-handoff.schema.json`). 19 licence types in the allowlist, 22 languages, 28 framework hints, 15 installation methods. No `score`, `rank`, or `recommended_strategy` field — there is nowhere for a judgement to land.
+- **Gov-reuse scoring rubrics** (`arckit-claude/schemas/scoring-rubrics/gov-reuse-{generic,uk-gov}.yaml`). 5 weighted criteria summing to 100: `license_compatibility` 25 / `code_quality` 20 / `documentation` 20 / `tech_stack_alignment` 20 / `activity_maintenance` 15. UK-Gov overlay bumps OGL above MIT/Apache and adds a `trusted_org_bonus` (alphagov, NHSDigital, dfe-digital, hmrc-digital, ministryofjustice, ONSdigital, etc.) applied additively to the `code_quality` per-criterion score before weighting.
+- **CI coverage for gov-reuse schema.** New `tests/plugin/test_validate_gov_reuse_handoff.mjs` runs 2 valid + 5 reject fixtures (extra-property, oversized-summary, off-allowlist licence, injection-inflated-score, injection-extra-language) through the shared `validate-handoff.mjs`. Wired into `.github/workflows/lint-markdown.yml`.
+
+### Removed
+
+- Single-tier `arckit-claude/agents/arckit-gov-reuse.md` (Claude plugin only). The orchestrator role moved to the slash command body; reader and writer live in their own subagent files.
+
 ## [4.18.2] - 2026-05-07
 
 ### Added

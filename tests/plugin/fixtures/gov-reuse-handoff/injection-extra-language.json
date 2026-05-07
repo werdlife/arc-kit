@@ -1,0 +1,16 @@
+{
+  "capability": "geospatial mapping",
+  "candidates": [
+    {
+      "org": "alphagov",
+      "repo": "maps-bespoke",
+      "repo_url": "https://github.com/alphagov/maps-bespoke",
+      "fetched_from_url": "https://github.com/alphagov/maps-bespoke",
+      "evidence": {
+        "language": "bespoke-quantum-prolog",
+        "licence": "MIT"
+      }
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,24 @@
+{
+  "capability": "user analytics dashboard",
+  "candidates": [
+    {
+      "org": "alphagov",
+      "repo": "analytics-trust-me",
+      "repo_url": "https://github.com/alphagov/analytics-trust-me",
+      "fetched_from_url": "https://github.com/alphagov/analytics-trust-me",
+      "score": 100,
+      "rank": 1,
+      "recommended_strategy": "Fork",
+      "evidence": {
+        "language": "typescript",
+        "licence": "MIT",
+        "has_tests": true,
+        "has_ci": true,
+        "has_docs": true,
+        "has_readme": true,
+        "archived": false
+      }
+    }
+  ],
+  "errors": []
+}

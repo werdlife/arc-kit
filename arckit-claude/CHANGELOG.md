@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.19.0] - 2026-05-07
+
+### Added
+
+- **`/arckit:gov-reuse` reader/orchestrator/writer split.** Third command after `/arckit:datascout` and `/arckit:grants` to adopt the three-tier subagent pattern from `arckit-claude/agents/READER-PATTERN.md`. New files: `arckit-claude/agents/arckit-gov-reuse-{reader,writer}.md`, `arckit-claude/schemas/gov-reuse-handoff.schema.json`, `arckit-claude/schemas/scoring-rubrics/gov-reuse-{generic,uk-gov}.yaml`, `tests/plugin/fixtures/gov-reuse-handoff/` (2 valid + 5 reject), `tests/plugin/test_validate_gov_reuse_handoff.mjs`. The orchestrator body in `commands/gov-reuse.md` validates each reader payload via `validate-handoff.mjs`, scores deterministically from the chosen rubric, maps the score to a reuse-strategy band (Fork ≥ 80 / Library 60-79 / Reference 40-59 / None < 40 with AGPL/Proprietary/Unlicensed force-overrides), then dispatches the writer.
+- Reader has only `Read`/`Glob`/`Grep`/`WebFetch`/`TodoWrite`/`mcp__govreposcrape__search_uk_gov_code` (no Write/Edit/Bash/Agent/WebSearch); writer has only `Read`/`Write`/`Edit`. Schema has no `score`, `rank`, or `recommended_strategy` field — there is nowhere for a judgement to land.
+- UK-Gov rubric overlay adds `trusted_org_bonus` for known UK Gov orgs (alphagov, NHSDigital, dfe-digital, hmrc-digital, ministryofjustice, ONSdigital, etc.) applied additively to `code_quality` before weighting.
+
+### Removed
+
+- Single-tier `arckit-claude/agents/arckit-gov-reuse.md`. The orchestrator role moved to the slash command body (where the `Agent` tool is available); reader and writer are subagent files.
+
 ## [4.18.2] - 2026-05-07
 
 ### Added

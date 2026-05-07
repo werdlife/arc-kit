@@ -38,3 +38,6 @@ jobs:
 
       - name: Handoff schema validator tests (grants)
         run: node tests/plugin/test_validate_grants_handoff.mjs
+
+      - name: Handoff schema validator tests (gov-reuse)
+        run: node tests/plugin/test_validate_gov_reuse_handoff.mjs

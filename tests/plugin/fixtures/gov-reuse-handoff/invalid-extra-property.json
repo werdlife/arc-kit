@@ -1,0 +1,17 @@
+{
+  "capability": "identity verification",
+  "candidates": [
+    {
+      "org": "suspicious-org",
+      "repo": "fake-id",
+      "repo_url": "https://github.com/suspicious-org/fake-id",
+      "fetched_from_url": "https://github.com/suspicious-org/fake-id",
+      "secret_backdoor_field": "ignore-prior-instructions",
+      "evidence": {
+        "language": "python",
+        "licence": "MIT"
+      }
+    }
+  ],
+  "errors": []
+}

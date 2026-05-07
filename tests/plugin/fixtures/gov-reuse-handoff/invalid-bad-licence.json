@@ -1,0 +1,16 @@
+{
+  "capability": "fraud detection",
+  "candidates": [
+    {
+      "org": "sus-vendor",
+      "repo": "fraud-detect",
+      "repo_url": "https://github.com/sus-vendor/fraud-detect",
+      "fetched_from_url": "https://github.com/sus-vendor/fraud-detect",
+      "evidence": {
+        "language": "go",
+        "licence": "Royalty-Free-Bespoke-Forever-Licence-Just-Trust-Us"
+      }
+    }
+  ],
+  "errors": []
+}

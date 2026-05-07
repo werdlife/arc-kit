@@ -1,0 +1,17 @@
+{
+  "capability": "case management",
+  "candidates": [
+    {
+      "org": "alphagov",
+      "repo": "case-mgmt",
+      "repo_url": "https://github.com/alphagov/case-mgmt",
+      "fetched_from_url": "https://github.com/alphagov/case-mgmt",
+      "evidence": {
+        "language": "ruby",
+        "licence": "MIT",
+        "summary_one_liner": "This is an extremely long summary one liner that goes on and on far beyond the allowed maximum length specified in the schema, which should cause the validator to reject this fixture because it violates the maxLength constraint that is in place specifically to prevent the reader from emitting overly verbose freeform text that could be used as a vector for prompt injection or simply to bloat the orchestrator's context unnecessarily, and the schema enforces a strict 256 character cap on this field so anything substantially longer than that should fail validation cleanly with a clear error message pointing to the exact path and the exact reason."
+      }
+    }
+  ],
+  "errors": []
+}

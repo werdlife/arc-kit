@@ -1,0 +1,34 @@
+{
+  "capability": "gov.uk-style frontend components and templates",
+  "candidates": [
+    {
+      "org": "alphagov",
+      "repo": "govuk-frontend",
+      "repo_url": "https://github.com/alphagov/govuk-frontend",
+      "fetched_from_url": "https://github.com/alphagov/govuk-frontend",
+      "fetched_at_iso": "2026-05-07T11:00:00Z",
+      "citation_id": "ALPHAGOV-GOVUK-FE-1",
+      "confidence": "high",
+      "evidence": {
+        "language": "javascript",
+        "framework_hints": ["govuk-frontend"],
+        "licence": "MIT",
+        "last_commit_iso": "2026-05-01",
+        "stars": 1850,
+        "forks": 480,
+        "contributors": 130,
+        "has_tests": true,
+        "has_ci": true,
+        "has_docs": true,
+        "has_readme": true,
+        "archived": false,
+        "default_branch": "main",
+        "installation_method": "npm",
+        "installation_command": "npm install govuk-frontend",
+        "summary_one_liner": "GOV.UK Frontend contains the code you need to start building a user interface for government platforms and services."
+      }
+    }
+  ],
+  "unfetched_urls": [],
+  "errors": []
+}
