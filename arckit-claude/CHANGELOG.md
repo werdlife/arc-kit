@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.1] - 2026-05-07
+
+### Fixed
+
+- **`allow-plugin-internals` hook recognises per-bucket grants tempfiles.** The orchestrator dispatches the reader once per `funder_category`, and the LLM names each tempfile with the bucket suffix (e.g. `/tmp/grants-handoff-open-data.AbCdEf.json`) for traceability across the run. The previous regex required either the literal `datascout-handoff` prefix or the `arckit-{name}-handoff` form, neither of which matched. Broadened to `(?:arckit-)?[a-z][a-z0-9]*-handoff(?:-[a-z][a-z0-9-]*)?...` — covers existing datascout patterns, the bare grants form, and per-bucket suffixes for any future agent.
+
 ## [4.18.0] - 2026-05-07
 
 ### Added

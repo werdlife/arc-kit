@@ -147,11 +147,20 @@ function escapeRegex(s) {
 
 function isArcKitTempfile(p) {
   if (!p || typeof p !== 'string') return false;
-  // ArcKit-managed tempfiles created by the orchestrator's mktemp call
-  // in commands/datascout.md (template /tmp/datascout-handoff.XXXXXX.json)
-  // and similar future patterns. Auto-allow Read against these so the
-  // orchestrator can re-inspect a payload it just wrote.
-  return /^\/tmp\/(datascout-handoff|arckit-[a-z]+-handoff)[A-Za-z0-9.-]*\.json$/.test(p);
+  // ArcKit-managed tempfiles created by an orchestrator's mktemp call:
+  //   /tmp/datascout-handoff.AbCdEf.json
+  //   /tmp/grants-handoff.AbCdEf.json
+  //   /tmp/grants-handoff-open-data.AbCdEf.json   (per-category dispatch)
+  //   /tmp/arckit-grants-handoff.AbCdEf.json      (alt prefix form)
+  //
+  // Pattern: optional "arckit-" prefix, then a lowercase agent name, then
+  // "-handoff", then optional further hyphenated qualifiers (e.g. funder
+  // category) and the mktemp random tail. Auto-allow Read against these
+  // so the orchestrator can re-inspect a payload it just wrote.
+  //
+  // Risk surface: Read-only, /tmp-scoped, transient. To exploit this an
+  // attacker would already need Bash auto-allow to plant the file.
+  return /^\/tmp\/(?:arckit-)?[a-z][a-z0-9]*-handoff(?:-[a-z][a-z0-9-]*)?[A-Za-z0-9.-]*\.json$/.test(p);
 }
 
 function shortPath(p) {

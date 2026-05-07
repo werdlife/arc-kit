@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.1] - 2026-05-07
+
+### Fixed
+
+- **Auto-allow hook now matches per-bucket grants tempfiles.** `allow-plugin-internals.mjs` previously only matched `/tmp/datascout-handoff*.json` and `/tmp/arckit-{name}-handoff*.json`, but at runtime the LLM names per-funder-category dispatch tempfiles like `/tmp/grants-handoff-open-data.AbCdEf.json` (suffixing the bucket name for traceability across multiple Bash invocations). The regex now broadens to `(?:arckit-)?[a-z][a-z0-9]*-handoff(?:-[a-z][a-z0-9-]*)?...`, accepting an optional `arckit-` prefix and an optional hyphenated qualifier between `-handoff` and the random tail. Read auto-allow remains scoped to /tmp and read-only.
+
 ## [4.18.0] - 2026-05-07
 
 ### Added
