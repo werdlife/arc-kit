@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.0] - 2026-05-07
+
+### Added
+
+- **`/arckit:grants` reader/orchestrator/writer split** — second command after `/arckit:datascout` to adopt the three-tier subagent pattern from `arckit-claude/agents/READER-PATTERN.md`. New files: `arckit-claude/agents/arckit-grants-{reader,writer}.md`, `arckit-claude/schemas/grants-handoff.schema.json`, `arckit-claude/schemas/scoring-rubrics/grants-{generic,uk-gov}.yaml`, `tests/plugin/fixtures/grants-handoff/` (2 valid + 5 reject), `tests/plugin/test_validate_grants_handoff.mjs`. The orchestrator body in `commands/grants.md` validates each reader payload via `validate-handoff.mjs`, scores deterministically from the chosen rubric, dispatches the writer. Reader has only `WebSearch`/`WebFetch`/`Read`/`Glob`/`Grep`/`TodoWrite` (no Write/Edit/Bash/Agent); writer has only `Read`/`Write`/`Edit`. Schema has no `score`/`rank`/`recommendation` field — there is nowhere for a judgement to land.
+
+### Removed
+
+- Single-tier `arckit-claude/agents/arckit-grants.md`. The orchestrator role moved to the slash command body (where the `Agent` tool is available); reader and writer are subagent files.
+
 ## [4.17.1] - 2026-05-06
 
 ### Fixed

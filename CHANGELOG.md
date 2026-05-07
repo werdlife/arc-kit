@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.0] - 2026-05-07
+
+### Added
+
+- **`/arckit:grants` reader/orchestrator/writer split.** Second command (after `/arckit:datascout` in v4.16.0) to adopt the three-tier subagent pattern documented in `arckit-claude/agents/READER-PATTERN.md`. The reader (`arckit-grants-reader`, WebSearch+WebFetch only, no Write/Edit/Bash/Agent) fetches programme evidence per `funder_category` bucket; the orchestrator (in the slash-command body, since plugin subagents cannot dispatch further subagents) validates the reader's JSON via `validate-handoff.mjs`, scores deterministically from a YAML rubric, then dispatches the writer (`arckit-grants-writer`, Read+Write+Edit only) which renders the GRNT artefact and one tech-note per scored programme.
+- **Grants handoff schema** (`arckit-claude/schemas/grants-handoff.schema.json`). 15-value `funder_type` allowlist, allowlist enums for organisation type / sector / geography / application status / complexity. No `score`, `rank`, or `recommendation` field — there is nowhere for a judgement to land in the schema even if the reader is overridden.
+- **Grants scoring rubrics** (`arckit-claude/schemas/scoring-rubrics/grants-{generic,uk-gov}.yaml`). Six criteria summing to 100: `eligibility_fit` 35 (composite of organisation type / sector overlap / TRL band) / `funding_size_fit` 20 / `timing_fit` 15 (status + deadline proximity) / `complexity_burden` 10 / `historic_traction` 10 / `match_funding_burden` 10. UK-Gov overlay adds `funder_type_bonus` (UKRI / Innovate UK / NIHR / DSIT / DASA preferred) and `geography_bonus` (uk-wide preferred) as additive adjustments to the eligibility_fit per-criterion score before weighting.
+- **CI coverage for the grants schema.** New `tests/plugin/test_validate_grants_handoff.mjs` (mirrors the datascout validator test) runs 2 valid + 5 reject fixtures (extra-property, oversized-field, off-allowlist funder_type, injection-inflated-score, injection-extra-org-type) through the shared `validate-handoff.mjs`. Wired into `.github/workflows/lint-markdown.yml`.
+
+### Removed
+
+- Single-tier `arckit-claude/agents/arckit-grants.md` and the stale generated extension agent files (`arckit-codex/agents/arckit-grants.{md,toml}`, `arckit-copilot/agents/arckit-grants.agent.md`, `arckit-gemini/agents/arckit-grants.md`, `arckit-opencode/agents/arckit-grants.md`). The orchestrator role lives in `arckit-claude/commands/grants.md` from this release onward.
+
 ## [4.17.1] - 2026-05-06
 
 ### Fixed
