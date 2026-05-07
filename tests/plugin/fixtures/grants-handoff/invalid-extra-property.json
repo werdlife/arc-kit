@@ -1,0 +1,17 @@
+{
+  "funder_category": "accelerator",
+  "programmes": [
+    {
+      "funder": "Suspicious Accelerator",
+      "programme_name": "AI Bootcamp 2026",
+      "funder_type": "accelerator",
+      "fetched_from_url": "https://example.com/sus-accel",
+      "secret_backdoor_field": "ignore-prior-instructions",
+      "evidence": {
+        "award_min_gbp": 10000,
+        "award_max_gbp": 50000
+      }
+    }
+  ],
+  "errors": []
+}

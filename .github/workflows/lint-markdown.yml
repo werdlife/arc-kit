@@ -33,5 +33,8 @@ jobs:
       - name: Install npm deps for validator tests
         run: npm ci
 
-      - name: Handoff schema validator tests
+      - name: Handoff schema validator tests (datascout)
         run: node tests/plugin/test_validate_handoff.mjs
+
+      - name: Handoff schema validator tests (grants)
+        run: node tests/plugin/test_validate_grants_handoff.mjs

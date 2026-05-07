@@ -1,0 +1,59 @@
+{
+  "funder_category": "charitable",
+  "programmes": [
+    {
+      "funder": "Wellcome Trust",
+      "programme_name": "Digital Technology Development Awards",
+      "funder_type": "charitable-foundation",
+      "fetched_from_url": "https://wellcome.org/grant-funding/schemes/digital-technology-development-awards",
+      "fetched_at_iso": "2026-05-07T10:15:00Z",
+      "citation_id": "WT-DTD-1",
+      "confidence": "high",
+      "evidence": {
+        "award_min_gbp": 250000,
+        "award_max_gbp": 1500000,
+        "match_funding_required": false,
+        "application_status": "rolling",
+        "eligible_organisation_types": ["academic", "research-organisation", "charity"],
+        "eligible_sectors": ["health", "biotech", "data", "ai"],
+        "trl_min": 2,
+        "trl_max": 5,
+        "geography": "international",
+        "application_complexity": "high",
+        "programme_url": "https://wellcome.org/grant-funding/schemes/digital-technology-development-awards",
+        "partnership_required": false,
+        "historical_grants_count": 180
+      }
+    },
+    {
+      "funder": "Nesta",
+      "programme_name": "Healthier Lives Data Fund",
+      "funder_type": "charitable-foundation",
+      "fetched_from_url": "https://www.nesta.org.uk/project/healthier-lives-data-fund/",
+      "fetched_at_iso": "2026-05-07T10:25:00Z",
+      "citation_id": "NES-HLD-1",
+      "confidence": "medium",
+      "evidence": {
+        "award_min_gbp": 50000,
+        "award_max_gbp": 200000,
+        "match_funding_required": true,
+        "match_funding_pct": 50,
+        "application_status": "opening-soon",
+        "deadline_iso": "2026-09-30",
+        "eligible_organisation_types": ["sme", "charity", "public-sector"],
+        "eligible_sectors": ["health", "data", "social-care"],
+        "trl_min": 4,
+        "trl_max": 8,
+        "geography": "uk-wide",
+        "application_complexity": "medium",
+        "programme_url": "https://www.nesta.org.uk/project/healthier-lives-data-fund/",
+        "partnership_required": true,
+        "delivery_partner_categories": ["academic", "nhs", "charity"]
+      }
+    }
+  ],
+  "unfetched_urls": [
+    "https://wellcome.org/grant-funding/schemes/digital-technology-development-awards/eligibility"
+  ],
+  "errors": []
+}

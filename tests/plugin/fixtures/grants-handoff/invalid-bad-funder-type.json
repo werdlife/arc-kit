@@ -1,0 +1,16 @@
+{
+  "funder_category": "social-impact",
+  "programmes": [
+    {
+      "funder": "Sus Capital Partners",
+      "programme_name": "Strategic Equity Programme",
+      "funder_type": "private-equity-buyout-firm",
+      "fetched_from_url": "https://example.com/sus-pe",
+      "evidence": {
+        "award_min_gbp": 500000,
+        "award_max_gbp": 5000000
+      }
+    }
+  ],
+  "errors": []
+}

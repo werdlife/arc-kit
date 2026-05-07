@@ -1,0 +1,16 @@
+{
+  "funder_category": "government-rd",
+  "programmes": [
+    {
+      "funder": "Innovate UK",
+      "programme_name": "Smart Grants Round 27 — Quantum-Enhanced AI for Sovereign Compute Infrastructure with Cross-Sector Industrial Partnership Programme for Strategic Capability Uplift Across Multiple Government Departments and Devolved Administrations Reporting Annually",
+      "funder_type": "innovate-uk",
+      "fetched_from_url": "https://example.com/iuk",
+      "evidence": {
+        "award_min_gbp": 100000,
+        "award_max_gbp": 500000
+      }
+    }
+  ],
+  "errors": []
+}

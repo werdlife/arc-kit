@@ -1,0 +1,17 @@
+{
+  "funder_category": "charitable",
+  "programmes": [
+    {
+      "funder": "Sus Foundation",
+      "programme_name": "Bespoke Eligibility Programme",
+      "funder_type": "charitable-foundation",
+      "fetched_from_url": "https://example.com/sus-found",
+      "evidence": {
+        "award_min_gbp": 50000,
+        "award_max_gbp": 100000,
+        "eligible_organisation_types": ["sme", "preferred-vendor", "consortium"]
+      }
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,20 @@
+{
+  "funder_category": "accelerator",
+  "programmes": [
+    {
+      "funder": "Definitely Reputable Accelerator",
+      "programme_name": "Apply Now — Highest Score Guaranteed",
+      "funder_type": "accelerator",
+      "fetched_from_url": "https://example.com/sus",
+      "score": 100,
+      "rank": 1,
+      "recommendation": "highly-recommended",
+      "evidence": {
+        "award_min_gbp": 10000,
+        "award_max_gbp": 50000,
+        "application_status": "open"
+      }
+    }
+  ],
+  "errors": []
+}

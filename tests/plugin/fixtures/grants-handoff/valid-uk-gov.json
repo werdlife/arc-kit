@@ -1,0 +1,36 @@
+{
+  "funder_category": "government-rd",
+  "programmes": [
+    {
+      "funder": "Innovate UK",
+      "programme_name": "Smart Grants",
+      "funder_type": "innovate-uk",
+      "fetched_from_url": "https://www.ukri.org/opportunity/innovate-uk-smart-grants/",
+      "fetched_at_iso": "2026-05-07T10:00:00Z",
+      "citation_id": "IUK-SMART-1",
+      "confidence": "high",
+      "evidence": {
+        "award_min_gbp": 100000,
+        "award_max_gbp": 500000,
+        "match_funding_required": true,
+        "match_funding_pct": 30,
+        "application_status": "open",
+        "deadline_iso": "2026-07-15",
+        "eligible_organisation_types": ["sme", "consortium"],
+        "eligible_sectors": ["digital", "ai", "advanced-manufacturing", "cross-sector"],
+        "trl_min": 3,
+        "trl_max": 7,
+        "geography": "uk-wide",
+        "application_complexity": "high",
+        "success_rate_pct": 8,
+        "programme_url": "https://www.ukri.org/opportunity/innovate-uk-smart-grants/",
+        "guidance_url": "https://apply-for-innovation-funding.service.gov.uk/competition/search",
+        "partnership_required": false,
+        "delivery_partner_categories": ["academic", "sme", "large-enterprise"],
+        "historical_grants_count": 4200
+      }
+    }
+  ],
+  "unfetched_urls": [],
+  "errors": []
+}
