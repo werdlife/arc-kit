@@ -110,7 +110,7 @@ For each entry in `scored_sources` (after dedup, before ranking), generate one p
 
 Return a one-line summary to the orchestrator:
 
-```
+```text
 Wrote {document_id}.md ({word_count} words). Spawned data-source profiles: {n_created} created, {n_updated} updated.
 ```
 
