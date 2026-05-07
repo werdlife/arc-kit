@@ -147,11 +147,18 @@ Validation between tiers uses `arckit-claude/scripts/validate-handoff.mjs` (zero
 
 `arckit-claude/commands-standalone/` holds commands that declare `allowed-tools:` frontmatter to run in restricted tool environments (e.g. `pages.md` limits itself to Read/Write/Glob). These are plugin-only and not processed by the converter.
 
-### Handoff Schemas & Doc-Types
+### Handoff Schemas
 
-`arckit-claude/schemas/` contains:
-- JSON schemas for structured handoff payloads (`datascout-handoff.schema.json`, `gov-reuse-handoff.schema.json`, `grants-handoff.schema.json`) — validated by the corresponding `.mjs` test files in `tests/plugin/`
-- `doc-types.mjs` — authoritative registry of ArcKit document type codes used by `validate-arc-filename.mjs` hook and test assertions
+`arckit-claude/schemas/` contains JSON schemas for structured handoff payloads (`datascout-handoff.schema.json`, `gov-reuse-handoff.schema.json`, `grants-handoff.schema.json`) — validated by the corresponding `.mjs` test files in `tests/plugin/`.
+
+### Doc-Types Registry
+
+`arckit-claude/config/doc-types.mjs` is the single source of truth for ArcKit document type codes used by the `validate-arc-filename.mjs` hook and test assertions.
+
+**Triple-registration required when adding/renaming a type code**:
+1. `arckit-claude/config/doc-types.mjs` — primary registry
+2. `arckit-claude/commands/pages.md` — dashboard allow-list (omitting here silently excludes artifacts from the rendered sidebar)
+3. `scripts/bash/generate-document-id.sh` — `MULTI_INSTANCE_TYPES` bash list
 
 ### References
 
